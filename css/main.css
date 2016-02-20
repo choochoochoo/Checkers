@@ -1,0 +1,49 @@
+.cell{
+    width: 80px;
+    height: 80px;
+    border: 1px solid black;
+    float: left;
+}
+
+.text-bottom {
+    height: 82px;
+    width: 82px;
+
+    text-align: center;
+    /* vertical-align: center;*/
+
+    margin: auto;
+    float: left;
+    font-family: "PT Sans", "Arial", serif;
+    font-weight: bold;
+}
+
+.text-left {
+    height: 82px;
+    width: 82px;
+    text-align: right;
+    vertical-align: middle;
+    float: left;
+    font-family: "PT Sans", "Arial", serif;
+    font-weight: bold;
+    line-height: 82px;
+    margin-right: 2px;
+}
+
+#checkersboard{
+    width: 800px;
+    height: 600px;
+}
+
+#tableboard{
+    width: 200px;
+    height: 100px;
+}
+
+.black{
+    background-color: silver;
+}
+
+.white{
+    background-color: ivory;
+}
