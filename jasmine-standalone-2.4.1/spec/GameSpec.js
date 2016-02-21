@@ -116,34 +116,34 @@ describe("Game", function() {
         game.play();
 
         var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
-        checker1.realObj.click();
-        var checker2 = game.checkBoard.getCheckerByPlayerAndId(1, 10);
-        checker2.realObj.click();
+        checker1.clickHandler();
+
+        // Сначала игрок 1
         expect(game.getCurrentPlayer()).toEqual(1);
 
-        var enabled = game.findEnabled();
-        var checker = game.checkBoard.selectedChecker;
+        // Перешли на второй раунд
+        var cell1 = checker1.getNearCells()[0];
+        cell1.clickHandler();
 
-        game.nextRound();
-
+        // После переключения игрок 2
         expect(game.getCurrentPlayer()).toEqual(2);
-        expect(enabled[0].isEnabled).toBe(false);
-        expect(enabled[1].isEnabled).toBe(false);
-        expect(enabled[2].isEnabled).toBe(false);
-        expect(enabled[3].isEnabled).toBe(false);
 
-        var enabled2 = game.findEnabled();
-        expect(enabled2.length).toEqual(4);
-        expect(enabled2[0].isEnabled).toBe(true)
-        expect(enabled2[0].id).toEqual(0);
-        expect(enabled2[0].player).toEqual(2);
+        // Не должно быть активных ячеек
+        var activeCells = game.checkBoard.cells.filter( function(item){ return item.isEnable; });
+        expect(activeCells.length).toEqual(0);
 
-        expect(checker.isEnabled).toEqual(false);
-        expect(checker.isSelected).toEqual(false);
+        // Должны быть активированы 4 шашки 2 игрока
+        var enableCheckers = game.checkBoard.checkers.filter( function(item){ return item.isEnabled; });
+        expect(enableCheckers.length).toEqual(4);
+        expect(enableCheckers[0].player).toEqual(2);
+
+
+        // Не должно быть выбранной шашки
         expect(game.checkBoard.selectedChecker).toEqual(null);
 
-        var activeCells = game.checkBoard.cells.filter( function(item){ return item.isEnable === true; });
-        expect(activeCells.length).toEqual(0);
+
+
+
     });
 
 

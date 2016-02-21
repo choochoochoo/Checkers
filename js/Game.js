@@ -79,11 +79,7 @@ var Game = function(checkBoard, tableBoard){
 
     // Переключить раунд
     this.nextRound = function(){
-        var cells = this.checkBoard.selectedChecker.getNearCells();
-        for(var i = 0; i < cells.length; i++){
-            cells[i].disable();
-        }
-
+        this.disableAllCells();
         this.changePlayer();
         this.disabledCheckers();
         this.findEnabled();
@@ -92,5 +88,12 @@ var Game = function(checkBoard, tableBoard){
 
         tableBoard.writeOnTableBoardPlayer(this.currentPlayer);
         tableBoard.writeOnTableBoardRound(this.round);
+    };
+
+    this.disableAllCells = function(){
+        var cells = this.checkBoard.cells.filter( function(item){ return item.isEnable; })
+        for(var i = 0; i < cells.length; i++){
+            cells[i].disable();
+        }
     };
 };
