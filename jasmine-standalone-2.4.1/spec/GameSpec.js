@@ -145,4 +145,6 @@ describe("Game", function() {
         var activeCells = game.checkBoard.cells.filter( function(item){ return item.isEnable === true; });
         expect(activeCells.length).toEqual(0);
     });
+
+
 });

@@ -33,8 +33,15 @@ CheckCell.prototype.clickHandler = function(){
 // Поставить шашку на клетку
 CheckCell.prototype.setChecker = function(ch){
     $('#' + this.id).html(ch.getRealObj());
+
+    // у старой клетки сотрем присутствие шашки
+    ch.cell.isChecker = false;
+    ch.cell.checker = null;
+
+    // Добавим шашку в новую
     this.isChecker = true;
     this.checker = ch;
+    ch.cell = this;
 };
 
 // Поставить шашку на клетку

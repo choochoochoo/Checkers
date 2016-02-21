@@ -84,4 +84,9 @@ var CheckBoard = function() {
             this.selectedChecker = null;
         }
     };
+
+    // Получить клетку по id
+    this.getCellById = function(id){
+        return this.cells.filter( function(item){ return item.id === id; })[0];
+    };
 };
