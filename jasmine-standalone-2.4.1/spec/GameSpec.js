@@ -137,14 +137,28 @@ describe("Game", function() {
         expect(enableCheckers.length).toEqual(4);
         expect(enableCheckers[0].player).toEqual(2);
 
-
         // Не должно быть выбранной шашки
         expect(game.checkBoard.selectedChecker).toEqual(null);
-
-
-
-
     });
 
+    it("Если на клетке присутствует шашка, то поле не должно активироваться", function() {
+        game.play();
 
+        var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        checker1.clickHandler();
+        var cell1 = checker1.getNearCells()[1];
+        cell1.clickHandler();
+
+        var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 1);
+        checker2.clickHandler();
+        var cell2 = checker2.getNearCells()[0];
+        cell2.clickHandler();
+
+        checker1.clickHandler();
+
+        var enableCells = game.checkBoard.cells.filter( function(item){ return item.isEnable; });
+
+        expect(enableCells.length).toEqual(1);
+        expect(enableCells[0].id).toEqual('5e');
+    });
 });

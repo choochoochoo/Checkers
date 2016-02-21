@@ -38,7 +38,9 @@ Checker.prototype.clickHandler = function(){
 
         var cells = this.getNearCells();
         for(var i = 0; i < cells.length; i++){
-            cells[i].enable();
+            if(!cells[i].isChecker){
+                cells[i].enable();
+            }
         }
     }
 };
