@@ -51,20 +51,29 @@ var Game = function(checkBoard, tableBoard){
     this.findPossible = function(){
 
         var playersCheckers = this.getCheckersCurrentPlayer();
-        var freeCells = [];
         var enabled = [];
 
         for (var i = 0; i < playersCheckers.length; i++) {
-            var nearCells = playersCheckers[i].getNearCells();
-
-            freeCells = nearCells.filter( function(item){ return !item.isChecker; } );
-            if(freeCells.length > 0){
+            if(this.hasEmptyCells(playersCheckers[i])){
                 enabled.push(playersCheckers[i]);
             }
         }
 
         return enabled;
     };
+
+    // Получить ячейки на которых нет шашек
+    this.hasEmptyCells = function(checker){
+        var freeCells = [];
+        var nearCells = checker.getNearCells();
+        freeCells = nearCells.filter( function(item){ return !item.isChecker; } );
+
+        if(freeCells.length > 0){
+            return true;
+        }
+
+        return false;
+    }
 
     // Активировать шашки для хода
     this.enablePossibleCheckers = function(checkers){
