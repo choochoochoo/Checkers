@@ -44,13 +44,13 @@ var Game = function(checkBoard, tableBoard){
         this.currentPlayer = 1;
         this.tableBoard.writeOnTableBoardPlayer(this.getCurrentPlayer());
         this.tableBoard.writeOnTableBoardRound(this.getRound());
-        this.findEnabled();
+        this.enablePossibleCheckers(this.findPossible());
     };
 
     // Получить шашки которыми можно сходить и выделить
-    this.findEnabled = function(){
-        var me = this;
-        var playersCheckers = this.checkBoard.checkers.filter( function(item){ return item.player === me.currentPlayer; } );
+    this.findPossible = function(){
+
+        var playersCheckers = this.getCheckersCurrentPlayer();
         var freeCells = [];
         var enabled = [];
 
@@ -63,12 +63,20 @@ var Game = function(checkBoard, tableBoard){
             }
         }
 
-        for(i = 0; i < enabled.length; i++){
-            enabled[i].enabled();
-        }
-
         return enabled;
     };
+
+    // Активировать шашки для хода
+    this.enablePossibleCheckers = function(checkers){
+        for(var i = 0; i < checkers.length; i++){
+            checkers[i].enabled();
+        }
+    }
+
+    // Получить шашки текущего игрока
+    this.getCheckersCurrentPlayer = function(){
+        return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer;}.bind(this) );
+    }
 
     // Убрать шашки которыми можно сходить
     this.disabledCheckers = function(){
@@ -82,7 +90,7 @@ var Game = function(checkBoard, tableBoard){
         this.disableAllCells();
         this.changePlayer();
         this.disabledCheckers();
-        this.findEnabled();
+        this.enablePossibleCheckers(this.findPossible());
         this.checkBoard.deselectSelectedChecker();
         this.changeRound();
 
@@ -96,4 +104,6 @@ var Game = function(checkBoard, tableBoard){
             cells[i].disable();
         }
     };
+
+
 };

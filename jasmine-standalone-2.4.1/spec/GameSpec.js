@@ -48,7 +48,8 @@ describe("Game", function() {
     it("В начале игры имеют ход верхние шашки белого игрока", function() {
         game.play();
 
-        var enabled = game.findEnabled();
+        var enabled = game.findPossible();
+        game.enablePossibleCheckers(enabled);
 
         expect(enabled.length).toEqual(4);
         expect(enabled[0].isEnabled).toBe(true);
@@ -60,7 +61,8 @@ describe("Game", function() {
     it("Сделать все шашки не активными", function() {
         game.play();
 
-        var enabled = game.findEnabled();
+        var enabled = game.findPossible();
+        game.enablePossibleCheckers(enabled);
 
         expect(enabled.length).toEqual(4);
         expect(enabled[0].isEnabled).toBe(true);
