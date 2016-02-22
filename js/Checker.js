@@ -18,6 +18,7 @@ var Checker = function(player, id, cell, checkBoard){
     // Клетка на которой расположена шашка
     this.cell = cell;
 
+    // Доска с шашками
     this.checkBoard = checkBoard;
 
     if(player === 1){
@@ -50,42 +51,49 @@ Checker.prototype.getRealObj = function(){
     return this.realObj;
 };
 
-// Получить id соседних ячеек куда можно будет сходить шашкой
-Checker.prototype.getNearCellsId = function(){
-    var cells = [];
-    var partOne = parseInt(this.cell.id.charAt(0));
-    var partTwo = this.cell.id.charAt(1).charCodeAt();
-    var cell1Id = null;
-    var cell2Id = null;
-
-    if(this.checkBoard.game.getCurrentPlayer() === 1){
-        cell1Id = (partOne + 1) + String.fromCharCode(partTwo - 1);
-        cell2Id = (partOne + 1) + String.fromCharCode(partTwo + 1);
-    }else{
-        cell1Id = (partOne - 1) + String.fromCharCode(partTwo - 1);
-        cell2Id = (partOne - 1) + String.fromCharCode(partTwo + 1);
-    }
-
-    cells.push(cell1Id);
-    cells.push(cell2Id);
-
-    return cells;
-};
-
 // Получить клетки куда можно сходить
 Checker.prototype.getNearCells = function(){
-    var cellsId = this.getNearCellsId();
+
     var cells = [];
     var cell = null;
 
-    for(var i = 0; i < cellsId.length; i++){
-        cell = this.checkBoard.cells.filter( function(item){ return item.id === cellsId[i]; } )[0];
+    if(this.checkBoard.game.getCurrentPlayer() === 1){
+
+        cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopLeft());
+        if(cell){
+            cells.push(cell);
+        }
+
+        cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopRight());
+        if(cell){
+            cells.push(cell);
+        }
+    }else{
+
+        cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomLeft());
+        if(cell){
+            cells.push(cell);
+        }
+
+        cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomRight());
         if(cell){
             cells.push(cell);
         }
     }
 
     return cells;
+};
+
+// Получить врагов рядом
+Checker.prototype.getEnemiesNear = function(){
+    return this.getNearCells().filter(function(item){
+        return item.isChecker && item.checker.isEnemy() && item.checker.isUnderAttack() ;
+    });
+};
+
+// Получить свободные клетки рядом
+Checker.prototype.getFreeCellNear = function(){
+    return this.getNearCells().filter( function(item){ return !item.isChecker; } );
 };
 
 // Сделать шашку доступной для хода
@@ -139,3 +147,13 @@ Checker.prototype.deselect = function(){
         this.realObj.attr({'src': 'img/black-checker-enabled.png'});
     }
 };
+
+// Эта шашка не принадлежит текущему игроку
+Checker.prototype.isEnemy = function(){
+    return this.player !== this.checkBoard.game.getCurrentPlayer();
+}
+
+// Эта шашка под ударом
+Checker.prototype.isUnderAttack = function(){
+    return false;
+}

@@ -47,45 +47,51 @@ var Game = function(checkBoard, tableBoard){
         this.enablePossibleCheckers(this.findPossible());
     };
 
-    // Получить шашки которыми можно сходить и выделить
+    // Получить шашки которыми можно сходить
     this.findPossible = function(){
 
-        var playersCheckers = this.getCheckersCurrentPlayer();
         var enabled = [];
+        //var checkersWithEnemies = this.getCheckersWithEnemiesNear();
 
-        for (var i = 0; i < playersCheckers.length; i++) {
-            if(this.hasEmptyCells(playersCheckers[i])){
-                enabled.push(playersCheckers[i]);
-            }
-        }
+        // Есть ли есть рядом враги со свободным полем для удара
+        //if(checkersWithEnemies.length > 0){
+        //
+        //}else{
+        //    enabled = this.getCheckersWithFreeCellsNear();
+        //}
+
+
+        enabled = this.getCheckersWithFreeCellsNear();
+
 
         return enabled;
     };
 
-    // Получить ячейки на которых нет шашек
-    this.hasEmptyCells = function(checker){
-        var freeCells = [];
-        var nearCells = checker.getNearCells();
-        freeCells = nearCells.filter( function(item){ return !item.isChecker; } );
+    // Получить все шашки у которых есть рядом свободная клетка
+    this.getCheckersWithFreeCellsNear = function(){
+        return this.getCheckersCurrentPlayer().filter(function(item){
+            return item.getFreeCellNear().length > 0;
+        });
+    };
 
-        if(freeCells.length > 0){
-            return true;
-        }
-
-        return false;
-    }
+    // Получит все шашки у которых рядом враг
+    this.getCheckersWithEnemiesNear = function(){
+        return this.getCheckersCurrentPlayer().filter(function(item){
+            return item.getEnemiesNear().length > 0;
+        });
+    };
 
     // Активировать шашки для хода
     this.enablePossibleCheckers = function(checkers){
         for(var i = 0; i < checkers.length; i++){
             checkers[i].enabled();
         }
-    }
+    };
 
     // Получить шашки текущего игрока
     this.getCheckersCurrentPlayer = function(){
         return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer;}.bind(this) );
-    }
+    };
 
     // Убрать шашки которыми можно сходить
     this.disabledCheckers = function(){
@@ -96,7 +102,7 @@ var Game = function(checkBoard, tableBoard){
 
     // Переключить раунд
     this.nextRound = function(){
-        this.disableAllCells();
+        this.checkBoard.disableAllCells();
         this.changePlayer();
         this.disabledCheckers();
         this.enablePossibleCheckers(this.findPossible());
@@ -106,13 +112,4 @@ var Game = function(checkBoard, tableBoard){
         tableBoard.writeOnTableBoardPlayer(this.currentPlayer);
         tableBoard.writeOnTableBoardRound(this.round);
     };
-
-    this.disableAllCells = function(){
-        var cells = this.checkBoard.cells.filter( function(item){ return item.isEnable; })
-        for(var i = 0; i < cells.length; i++){
-            cells[i].disable();
-        }
-    };
-
-
 };

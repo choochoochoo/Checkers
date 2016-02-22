@@ -1,4 +1,4 @@
-describe("Checker", function() {
+describe("Checker spec", function() {
     var game;
 
     beforeEach(function() {
@@ -9,37 +9,36 @@ describe("Checker", function() {
         game.play();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 1);
-        var nearCells = checker.getNearCellsId();
+        var nearCells = checker.getNearCells();
 
-        expect(nearCells[0]).toEqual('2b');
-        expect(nearCells[1]).toEqual('2d');
+        expect(nearCells[0].id).toEqual('2b');
+        expect(nearCells[1].id).toEqual('2d');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 5);
-        nearCells = checker.getNearCellsId();
-        expect(nearCells[0]).toEqual('3c');
-        expect(nearCells[1]).toEqual('3e');
+        nearCells = checker.getNearCells();
+        expect(nearCells[0].id).toEqual('3c');
+        expect(nearCells[1].id).toEqual('3e');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 0);
-        nearCells = checker.getNearCellsId();
-        expect(nearCells[0]).toEqual('2`');
-        expect(nearCells[1]).toEqual('2b');
-        expect(nearCells.length).toEqual(2);
+        nearCells = checker.getNearCells();
+        expect(nearCells[0].id).toEqual('2b');
+        expect(nearCells.length).toEqual(1);
 
         game.checkBoard.selectedChecker = checker;
 
         game.nextRound();
 
         checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
-        nearCells = checker.getNearCellsId();
+        nearCells = checker.getNearCells();
 
-        expect(nearCells[0]).toEqual('5a');
-        expect(nearCells[1]).toEqual('5c');
+        expect(nearCells[0].id).toEqual('5a');
+        expect(nearCells[1].id).toEqual('5c');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(2, 1);
-        nearCells = checker.getNearCellsId();
+        nearCells = checker.getNearCells();
 
-        expect(nearCells[0]).toEqual('5c');
-        expect(nearCells[1]).toEqual('5e');
+        expect(nearCells[0].id).toEqual('5c');
+        expect(nearCells[1].id).toEqual('5e');
     });
 
     it("Активировать клетки для хода", function() {

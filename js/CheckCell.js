@@ -60,3 +60,34 @@ CheckCell.prototype.disable = function(){
     this.isEnable = false;
     this.getRealObj().css({backgroundColor: 'silver'});
 };
+
+// Получить первую часть id
+CheckCell.prototype.getFirstPartOfId = function(){
+    return parseInt(this.id.charAt(0), 10);
+};
+
+// Получить вторую часть id
+CheckCell.prototype.getSecondPartOfId = function(){
+    return this.id.charCodeAt(1);
+};
+
+// Получить клетку по диагонали вверх и влево
+CheckCell.prototype.getCellIdByDiagonalTopLeft = function(){
+    return (this.getFirstPartOfId() + 1) + String.fromCharCode(this.getSecondPartOfId() - 1);
+};
+
+// Получить клетку по диагонали вверх и вправо
+CheckCell.prototype.getCellIdByDiagonalTopRight = function(){
+    return (this.getFirstPartOfId() + 1) + String.fromCharCode(this.getSecondPartOfId() + 1);
+};
+
+// Получить клетку по диагонали вниз и влево
+CheckCell.prototype.getCellIdByDiagonalBottomLeft = function(){
+    return (this.getFirstPartOfId() - 1) + String.fromCharCode(this.getSecondPartOfId() - 1);
+};
+
+// Получить клетку по диагонали вниз и вправо
+CheckCell.prototype.getCellIdByDiagonalBottomRight = function(){
+    return (this.getFirstPartOfId() - 1) + String.fromCharCode(this.getSecondPartOfId() + 1);
+};
+

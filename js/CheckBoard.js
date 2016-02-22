@@ -69,10 +69,8 @@ var CheckBoard = function() {
         if(this.selectedChecker){
             this.selectedChecker.deselect();
 
-            var cells = this.selectedChecker.getNearCells();
-            for(var i = 0; i < cells.length; i++){
-                cells[i].disable();
-            }
+            // Сделать старые активные поля неактивными
+            this.disableAllCells();
         }
         this.selectedChecker = checker;
     };
@@ -88,5 +86,18 @@ var CheckBoard = function() {
     // Получить клетку по id
     this.getCellById = function(id){
         return this.cells.filter( function(item){ return item.id === id; })[0];
+    };
+
+    // Получить все активные клетки
+    this.getEnableCells = function(){
+        return this.cells.filter( function(item){ return item.isEnable; });
+    };
+
+    // Деактивировать все активные клетки
+    this.disableAllCells = function(){
+        var cells = this.getEnableCells();
+        for(var i = 0; i < cells.length; i++){
+            cells[i].disable();
+        }
     };
 };

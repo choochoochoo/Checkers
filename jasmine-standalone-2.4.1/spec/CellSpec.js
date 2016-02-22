@@ -1,4 +1,4 @@
-describe("Cell", function() {
+describe("CheckCell", function() {
     var game;
 
     beforeEach(function() {
@@ -24,5 +24,33 @@ describe("Cell", function() {
         // новая
         expect(cell1.isChecker).toBe(true);
         expect(cell1.checker.cell.id).toBe('4b');
+    });
+
+    it("Получить клетку по диагонали вверх и влево", function() {
+        game.play();
+        var cell = game.checkBoard.getCellById('3c');
+        var id = cell.getCellIdByDiagonalTopLeft();
+        expect(id).toEqual('4b');
+    });
+
+    it("Получить клетку по диагонали вверх и влево", function() {
+        game.play();
+        var cell = game.checkBoard.getCellById('3c');
+        var id = cell.getCellIdByDiagonalTopRight();
+        expect(id).toEqual('4d');
+    });
+
+    it("Получить клетку по диагонали вниз и влево", function() {
+        game.play();
+        var cell = game.checkBoard.getCellById('6d');
+        var id = cell.getCellIdByDiagonalBottomLeft();
+        expect(id).toEqual('5c');
+    });
+
+    it("Получить клетку по диагонали вниз и вправо", function() {
+        game.play();
+        var cell = game.checkBoard.getCellById('6d');
+        var id = cell.getCellIdByDiagonalBottomRight();
+        expect(id).toEqual('5e');
     });
 });
