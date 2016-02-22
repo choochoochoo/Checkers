@@ -11,17 +11,17 @@ describe("Checker spec", function() {
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 1);
         var nearCells = checker.getNearCells();
 
-        expect(nearCells[0].id).toEqual('2b');
-        expect(nearCells[1].id).toEqual('2d');
+        expect(nearCells[0].cell.id).toEqual('2b');
+        expect(nearCells[1].cell.id).toEqual('2d');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 5);
         nearCells = checker.getNearCells();
-        expect(nearCells[0].id).toEqual('3c');
-        expect(nearCells[1].id).toEqual('3e');
+        expect(nearCells[0].cell.id).toEqual('3c');
+        expect(nearCells[1].cell.id).toEqual('3e');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 0);
         nearCells = checker.getNearCells();
-        expect(nearCells[0].id).toEqual('2b');
+        expect(nearCells[0].cell.id).toEqual('2b');
         expect(nearCells.length).toEqual(1);
 
         game.checkBoard.selectedChecker = checker;
@@ -31,14 +31,14 @@ describe("Checker spec", function() {
         checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         nearCells = checker.getNearCells();
 
-        expect(nearCells[0].id).toEqual('5a');
-        expect(nearCells[1].id).toEqual('5c');
+        expect(nearCells[0].cell.id).toEqual('5a');
+        expect(nearCells[1].cell.id).toEqual('5c');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(2, 1);
         nearCells = checker.getNearCells();
 
-        expect(nearCells[0].id).toEqual('5c');
-        expect(nearCells[1].id).toEqual('5e');
+        expect(nearCells[0].cell.id).toEqual('5c');
+        expect(nearCells[1].cell.id).toEqual('5e');
     });
 
     it("Активировать клетки для хода", function() {
@@ -46,8 +46,8 @@ describe("Checker spec", function() {
 
         var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker1.realObj.click();
-        var cell1 = checker1.getNearCells()[0];
-        var cell2 = checker1.getNearCells()[1];
+        var cell1 = checker1.getNearCells()[0].cell;
+        var cell2 = checker1.getNearCells()[1].cell;
         expect(cell1.isEnable).toBe(true);
         expect(cell2.isEnable).toBe(true);
 
@@ -57,8 +57,8 @@ describe("Checker spec", function() {
         expect(cell1.isEnable).toBe(false);
         expect(cell2.isEnable).toBe(false);
 
-        var cell21 = checker2.getNearCells()[0];
-        var cell22 = checker2.getNearCells()[1];
+        var cell21 = checker2.getNearCells()[0].cell;
+        var cell22 = checker2.getNearCells()[1].cell;
         expect(cell21.isEnable).toBe(true);
         expect(cell22.isEnable).toBe(true);
     });
@@ -68,8 +68,8 @@ describe("Checker spec", function() {
 
         var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker1.realObj.click();
-        var cell1 = checker1.getNearCells()[0];
-        var cell2 = checker1.getNearCells()[1];
+        var cell1 = checker1.getNearCells()[0].cell;
+        var cell2 = checker1.getNearCells()[1].cell;
 
         expect(cell1.isChecker).toBe(false);
 

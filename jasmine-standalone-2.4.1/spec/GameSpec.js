@@ -84,17 +84,17 @@ describe("Game", function() {
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 1);
         var nearCells = checker.getNearCells();
 
-        expect(nearCells[0].id).toEqual('2b');
-        expect(nearCells[1].id).toEqual('2d');
+        expect(nearCells[0].cell.id).toEqual('2b');
+        expect(nearCells[1].cell.id).toEqual('2d');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 5);
         nearCells = checker.getNearCells();
-        expect(nearCells[0].id).toEqual('3c');
-        expect(nearCells[1].id).toEqual('3e');
+        expect(nearCells[0].cell.id).toEqual('3c');
+        expect(nearCells[1].cell.id).toEqual('3e');
 
         checker = game.checkBoard.getCheckerByPlayerAndId(1, 0);
         nearCells = checker.getNearCells();
-        expect(nearCells[0].id).toEqual('2b');
+        expect(nearCells[0].cell.id).toEqual('2b');
         expect(nearCells.length).toEqual(1);
     });
 
@@ -124,7 +124,7 @@ describe("Game", function() {
         expect(game.getCurrentPlayer()).toEqual(1);
 
         // Перешли на второй раунд
-        var cell1 = checker1.getNearCells()[0];
+        var cell1 = checker1.getNearCells()[0].cell;
         cell1.clickHandler();
 
         // После переключения игрок 2
@@ -148,12 +148,12 @@ describe("Game", function() {
 
         var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker1.clickHandler();
-        var cell1 = checker1.getNearCells()[1];
+        var cell1 = checker1.getNearCells()[1].cell;
         cell1.clickHandler();
 
         var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 1);
         checker2.clickHandler();
-        var cell2 = checker2.getNearCells()[0];
+        var cell2 = checker2.getNearCells()[0].cell;
         cell2.clickHandler();
 
         checker1.clickHandler();

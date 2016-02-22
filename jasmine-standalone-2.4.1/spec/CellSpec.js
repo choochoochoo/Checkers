@@ -13,7 +13,7 @@ describe("CheckCell", function() {
         var prevCell = checker1.cell;
 
         checker1.clickHandler();
-        var cell1 = checker1.getNearCells()[0];
+        var cell1 = checker1.getNearCells()[0].cell;
 
         cell1.clickHandler();
 

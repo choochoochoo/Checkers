@@ -51,17 +51,16 @@ var Game = function(checkBoard, tableBoard){
     this.findPossible = function(){
 
         var enabled = [];
-        //var checkersWithEnemies = this.getCheckersWithEnemiesNear();
+        var checkersWithEnemies = this.getCheckersWithEnemiesNear();
 
         // Есть ли есть рядом враги со свободным полем для удара
-        //if(checkersWithEnemies.length > 0){
-        //
-        //}else{
-        //    enabled = this.getCheckersWithFreeCellsNear();
-        //}
+        if(checkersWithEnemies.length > 0){
+            enabled = checkersWithEnemies;
+        }else{
+            enabled = this.getCheckersWithFreeCellsNear();
+        }
 
 
-        enabled = this.getCheckersWithFreeCellsNear();
 
 
         return enabled;
@@ -90,7 +89,12 @@ var Game = function(checkBoard, tableBoard){
 
     // Получить шашки текущего игрока
     this.getCheckersCurrentPlayer = function(){
-        return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer;}.bind(this) );
+        return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer; }.bind(this) );
+    };
+
+    // Получить активные шашки
+    this.getEnableCheckers = function(){
+        return this.checkBoard.checkers.filter( function(item){ return item.isEnabled; } );
     };
 
     // Убрать шашки которыми можно сходить
