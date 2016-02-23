@@ -37,10 +37,17 @@ Checker.prototype.clickHandler = function(){
         this.checkBoard.setSelectedChecker(this);
         this.select();
 
-        var cells = this.getNearCells();
-        for(var i = 0; i < cells.length; i++){
-            if(!cells[i].cell.isChecker){
-                cells[i].cell.enable();
+        var enemies = this.getEnemiesNear();
+        var freeCells = null;
+
+        if(enemies.length > 0){
+            for(var i = 0; i < enemies.length; i++){
+                this.getCellByPos(enemies[i].cell, enemies[i].pos).enable();
+            }
+        }else{
+            freeCells = this.getFreeCellNear();
+            for(var i = 0; i < freeCells.length; i++){
+                freeCells[i].cell.enable();
             }
         }
     }
@@ -156,24 +163,32 @@ Checker.prototype.isEnemy = function(){
 // Эта шашка под ударом
 Checker.prototype.isUnderAttack = function(pos){
 
-    switch(pos) {
-        case 'TopLeft':
-            return !this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopLeft()).isChecker;
-            break;
-        case 'TopRight':
-            return !this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopRight()).isChecker;
-            break;
-        case 'BottomLeft':
-            return !this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomLeft()).isChecker;
-            break;
-        case 'BottomRight':
-            return !this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomRight()).isChecker;
-            break;
-        default:
-            return false;
-            break;
-    }
+    var cell = this.getCellByPos(this.cell, pos);
 
+    if(cell && cell.isChecker === false) {
+        return true;
+    }
 
     return false;
 }
+
+// Получить клетку в зависимости от позиции
+Checker.prototype.getCellByPos = function(cell, pos){
+    switch(pos) {
+        case 'TopLeft':
+            return this.checkBoard.getCellById(cell.getCellIdByDiagonalTopLeft());
+            break;
+        case 'TopRight':
+            return this.checkBoard.getCellById(cell.getCellIdByDiagonalTopRight());
+            break;
+        case 'BottomLeft':
+            return this.checkBoard.getCellById(cell.getCellIdByDiagonalBottomLeft());
+            break;
+        case 'BottomRight':
+            return this.checkBoard.getCellById(cell.getCellIdByDiagonalBottomRight());
+            break;
+        default:
+            return null;
+            break;
+    }
+};

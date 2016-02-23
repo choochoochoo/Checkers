@@ -60,9 +60,6 @@ var Game = function(checkBoard, tableBoard){
             enabled = this.getCheckersWithFreeCellsNear();
         }
 
-
-
-
         return enabled;
     };
 
