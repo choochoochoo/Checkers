@@ -101,9 +101,38 @@ Checker.prototype.getNearCells = function(){
     return cells;
 };
 
+// Получить все ближайшие клетки без учета игрока
+Checker.prototype.getNearCellsWithoutPlayer = function(){
+
+    var cells = [];
+    var cell = null;
+
+    cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopLeft());
+    if(cell){
+        cells.push({cell: cell, pos: 'TopLeft'});
+    }
+
+    cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopRight());
+    if(cell){
+        cells.push({cell: cell, pos: 'TopRight'});
+    }
+
+    cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomLeft());
+    if(cell){
+        cells.push({cell: cell, pos: 'BottomLeft'});
+    }
+
+    cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalBottomRight());
+    if(cell){
+        cells.push({cell: cell, pos: 'BottomRight'});
+    }
+
+    return cells;
+};
+
 // Получить врагов рядом
 Checker.prototype.getEnemiesNear = function(){
-    return this.getNearCells().filter(function(item){
+    return this.getNearCellsWithoutPlayer().filter(function(item){
         return item.cell.isChecker && item.cell.checker.isEnemy() && item.cell.checker.isUnderAttack(item.pos) ;
     });
 };

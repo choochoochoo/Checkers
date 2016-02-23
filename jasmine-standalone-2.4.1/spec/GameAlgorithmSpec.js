@@ -106,6 +106,62 @@ describe("Game algorithm for attack", function() {
         expect(enableCells[0].isKiller()).toBe(false);
     });
 
+    it("Убить шашку назад", function() {
+        game.play();
+        // было на 3c
+        var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        checker1.clickHandler();
+        // Поставить на 4d
+        var cell1 = checker1.getNearCells()[1].cell;
+        cell1.clickHandler();
+
+        // было 6d
+        var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 1);
+        checker2.clickHandler();
+        // поставить на 5c
+        var cell2 = checker2.getNearCells()[0].cell;
+        cell2.clickHandler();
+
+        // было на 3a
+        var checker3 = game.checkBoard.getCheckerByPlayerAndId(1, 8);
+        checker3.clickHandler();
+        // Поставить на 4b
+        var cell3 = checker3.getNearCells()[0].cell;
+        cell3.clickHandler();
+
+        // было на 5c
+        checker2.clickHandler();
+        // Поставить на 3a и убить шашку на 4b
+        var cell4 = game.checkBoard.getCellById('3a');
+        cell4.clickHandler();
+
+        // было на 2d
+        var checker5 = game.checkBoard.getCheckerByPlayerAndId(1, 5);
+        checker5.clickHandler();
+        // Поставить на 3c
+        var cell5 = checker5.getNearCells()[0].cell;
+        cell5.clickHandler();
+
+        // было на 6b
+        var checker6 = game.checkBoard.getCheckerByPlayerAndId(2, 0);
+        checker6.clickHandler();
+        // Поставить на 5a
+        var cell6 = checker6.getNearCells()[0].cell;
+        cell6.clickHandler();
+
+        // было на 3c
+        checker5.clickHandler();
+        // Поставить на 4b
+        var cell7 = checker5.getNearCells()[0].cell;
+        cell7.clickHandler();
+
+        // Должны быть две шашки и вторая должна мочь ударить назад
+        var enableCheckers = game.getEnableCheckers();
+        expect(enableCheckers.length).toEqual(2);
+        expect(enableCheckers[0].id).toEqual(0);
+        expect(enableCheckers[1].id).toEqual(1);
+    });
+
     //it("Если рядом шашка противника и за ней пустая клетка нужно активировать клетку для удара через одну, " +
     //    "шашек доступных для удара может две и больше", function() {
     //    game.play();
