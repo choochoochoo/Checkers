@@ -86,7 +86,7 @@ var Game = function(checkBoard, tableBoard){
 
     // Получить шашки текущего игрока
     this.getCheckersCurrentPlayer = function(){
-        return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer; }.bind(this) );
+        return this.checkBoard.checkers.filter( function(item){ return item.player === this.currentPlayer && !item.isKilled; }.bind(this) );
     };
 
     // Получить активные шашки

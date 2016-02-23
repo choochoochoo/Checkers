@@ -15,6 +15,9 @@ var Checker = function(player, id, cell, checkBoard){
     // Активная шашка
     this.isSelected = false;
 
+    // Убита ли шашка
+    this.isKilled = false;
+
     // Клетка на которой расположена шашка
     this.cell = cell;
 
@@ -39,10 +42,14 @@ Checker.prototype.clickHandler = function(){
 
         var enemies = this.getEnemiesNear();
         var freeCells = null;
+        var killerCell = null;
 
         if(enemies.length > 0){
             for(var i = 0; i < enemies.length; i++){
-                this.getCellByPos(enemies[i].cell, enemies[i].pos).enable();
+                killerCell = this.getCellByPos(enemies[i].cell, enemies[i].pos);
+                // Это поле убивает эту шашку
+                killerCell.killedChecker = enemies[i].cell.checker;
+                killerCell.enable();
             }
         }else{
             freeCells = this.getFreeCellNear();
@@ -59,6 +66,9 @@ Checker.prototype.getRealObj = function(){
 };
 
 // Получить клетки куда можно сходить
+// возвращает массив объектов {cell, pos}
+// cell - клетка
+// pos - отношение между двумя клетками
 Checker.prototype.getNearCells = function(){
 
     var cells = [];
@@ -158,7 +168,7 @@ Checker.prototype.deselect = function(){
 // Эта шашка не принадлежит текущему игроку
 Checker.prototype.isEnemy = function(){
     return this.player !== this.checkBoard.game.getCurrentPlayer();
-}
+};
 
 // Эта шашка под ударом
 Checker.prototype.isUnderAttack = function(pos){
@@ -170,7 +180,7 @@ Checker.prototype.isUnderAttack = function(pos){
     }
 
     return false;
-}
+};
 
 // Получить клетку в зависимости от позиции
 Checker.prototype.getCellByPos = function(cell, pos){
@@ -191,4 +201,13 @@ Checker.prototype.getCellByPos = function(cell, pos){
             return null;
             break;
     }
+};
+
+// Убить шашку
+Checker.prototype.kill = function(){
+    this.isKilled = true;
+    this.cell.checker = null;
+    this.cell.isChecker = false;
+    this.cell = null;
+    this.realObj.hide();
 };

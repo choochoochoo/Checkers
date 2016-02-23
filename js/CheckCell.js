@@ -17,6 +17,9 @@ var CheckCell = function(id, checkBoard){
     // Доступность для хода
     this.isEnable = false;
 
+    // Убиваемая данным полем шашка
+    this.killedChecker = null;
+
     // Привязать событие клика к клетке
     $(this.realObj).click(this.clickHandler.bind(this));
 };
@@ -25,6 +28,11 @@ var CheckCell = function(id, checkBoard){
 CheckCell.prototype.clickHandler = function(){
     if(this.isEnable){
         this.setChecker(this.checkBoard.selectedChecker);
+
+        // Убить шашку
+        if(this.isKiller()){
+            this.killedChecker.kill();
+        }
 
         this.checkBoard.game.nextRound();
     }
@@ -91,3 +99,7 @@ CheckCell.prototype.getCellIdByDiagonalBottomRight = function(){
     return (this.getFirstPartOfId() - 1) + String.fromCharCode(this.getSecondPartOfId() + 1);
 };
 
+// Поле является убийцей
+CheckCell.prototype.isKiller = function(){
+    return !!this.killedChecker;
+};

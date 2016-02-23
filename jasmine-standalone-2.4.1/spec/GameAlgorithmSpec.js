@@ -66,6 +66,43 @@ describe("Game algorithm for attack", function() {
 
     });
 
+    it("Убить шашку", function() {
+        game.play();
+        // было на 3e
+        var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 10);
+        checker1.clickHandler();
+        // Поставить на 4f
+        var cell1 = checker1.getNearCells()[1].cell;
+        cell1.clickHandler();
+
+        // было 6f
+        var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 2);
+        checker2.clickHandler();
+        // поставить на 5e
+        var cell2 = checker2.getNearCells()[0].cell;
+        cell2.clickHandler();
+
+        // было на 3g
+        var checker3 = game.checkBoard.getCheckerByPlayerAndId(1, 11);
+        checker3.clickHandler();
+        // Поставить на 4h
+        var cell3 = checker3.getNearCells()[1].cell;
+        cell3.clickHandler();
+
+        checker2.clickHandler();
+        var enableCells = game.checkBoard.getEnableCells();
+        enableCells[0].clickHandler();
+
+        // Шашка должна быть убита
+        expect(checker1.isKilled).toBe(true);
+
+        // На поле не должно быть шашки
+        expect(cell1.isChecker).toBe(false);
+
+        // У шашки не дожно быть поля
+        expect(checker1.cell).toEqual(null);
+    });
+
     //it("Если рядом шашка противника и за ней пустая клетка нужно деактивировать все остальные шашки", function() {
     //    game.play();
     //
