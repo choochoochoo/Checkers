@@ -32,6 +32,7 @@ CheckCell.prototype.clickHandler = function(){
         // Убить шашку
         if(this.isKiller()){
             this.killedChecker.kill();
+            this.killedChecker = null;
         }
 
         this.checkBoard.game.nextRound();
