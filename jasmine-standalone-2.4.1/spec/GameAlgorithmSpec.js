@@ -162,17 +162,40 @@ describe("Game algorithm for attack", function() {
         expect(enableCheckers[1].id).toEqual(1);
     });
 
-    //it("Если рядом шашка противника и за ней пустая клетка нужно активировать клетку для удара через одну, " +
-    //    "шашек доступных для удара может две и больше", function() {
-    //    game.play();
-    //
-    //
-    //});
-    //
-    //it("Если рядом шашка противника и за ней пустая клетка нужно деактивировать все остальные шашки," +
-    //    "может быть две и больше шашки которыми можно ударить", function() {
-    //    game.play();
-    //
-    //
-    //});
+    it("Убить можно больше двух шашек за ход", function() {
+        game.play();
+
+        // было на 3c
+        var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        checker1.clickHandler();
+        // Поставить на 4d
+        var cell1 = checker1.getNearCells()[1].cell;
+        cell1.clickHandler();
+
+        // было 6d
+        var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 1);
+        checker2.clickHandler();
+        // поставить на 5c
+        var cell2 = checker2.getNearCells()[0].cell;
+        cell2.clickHandler();
+
+        // было на 3e
+        var checker3 = game.checkBoard.getCheckerByPlayerAndId(1, 10);
+        checker3.clickHandler();
+        // Поставить на 4f
+        var cell3 = checker3.getNearCells()[1].cell;
+        cell3.clickHandler();
+
+        // было на 5c
+        checker2.clickHandler();
+        var cell_3e = game.checkBoard.getCellById('3e');
+        // Поставить на 3e и убить шашку на 4d
+        cell_3e.clickHandler();
+
+        expect(game.getCurrentPlayer()).toEqual(2);
+        expect(game.checkBoard.getEnableCells().length).toEqual(1);
+        var cell_5g = game.checkBoard.getCellById('5g');
+        expect(cell_5g.isEnable).toBe(true);
+    });
+
 });

@@ -33,6 +33,15 @@ CheckCell.prototype.clickHandler = function(){
         if(this.isKiller()){
             this.killedChecker.kill();
             this.killedChecker = null;
+
+            // Здесь нужно узнать можно ли еще кого то убить этой шашкой
+            var enemiesNear = this.checkBoard.selectedChecker.getEnemiesNear();
+            // Если есть нужно не переключать игрока
+            if(enemiesNear.length > 0){
+                this.checkBoard.disableAllCells();
+                this.checkBoard.selectedChecker.clickHandler();
+                return;
+            }
         }
 
         this.checkBoard.game.nextRound();
