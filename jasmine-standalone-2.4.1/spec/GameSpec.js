@@ -35,6 +35,12 @@ describe("Game", function() {
         expect(el.isChecker).toBe(true);
     });
 
+    it("В начале игры все шашки не дамки", function() {
+        game.play();
+        var checkers = game.checkBoard.checkers.filter( function(item){ return item.isQueen(); } );
+        expect(checkers.length).toEqual(0);
+    });
+
     it("Смена игрока", function() {
         game.play();
         expect(game.getCurrentPlayer()).toEqual(1);
@@ -43,7 +49,6 @@ describe("Game", function() {
         game.changePlayer();
         expect(game.getCurrentPlayer()).toEqual(1);
     });
-
 
     it("В начале игры имеют ход верхние шашки белого игрока", function() {
         game.play();
@@ -112,7 +117,6 @@ describe("Game", function() {
         expect(checker2.isSelected).toBe(true);
         expect(checker2).toEqual(game.checkBoard.selectedChecker);
     });
-
 
     it("Переключить раунд на 2", function() {
         game.play();

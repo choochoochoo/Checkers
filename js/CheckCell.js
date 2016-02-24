@@ -60,6 +60,10 @@ CheckCell.prototype.setChecker = function(ch){
     this.isChecker = true;
     this.checker = ch;
     ch.cell = this;
+
+    if(this.checkBoard.isIntoQueenPlaces(this.id)){
+        ch.makeQueen();
+    }
 };
 
 // Поставить шашку на клетку
@@ -107,6 +111,80 @@ CheckCell.prototype.getCellIdByDiagonalBottomLeft = function(){
 // Получить клетку по диагонали вниз и вправо
 CheckCell.prototype.getCellIdByDiagonalBottomRight = function(){
     return (this.getFirstPartOfId() - 1) + String.fromCharCode(this.getSecondPartOfId() + 1);
+};
+
+// Получить все клетки по диагонали вверх и влево
+// граница по Y - 8, по X - a
+CheckCell.prototype.getAllCellIdsByDiagonalTopLeft = function(){
+    var cellIds = [];
+
+    // Навеяло интересно решение благодаря js
+    // взял из основного объекта часть, которая нужна для решения
+    // данной задачи
+    var obj = {
+        id: this.id,
+        getFirstPartOfId: CheckCell.prototype.getFirstPartOfId,
+        getSecondPartOfId: CheckCell.prototype.getSecondPartOfId,
+        getCellIdByDiagonalTopLeft: CheckCell.prototype.getCellIdByDiagonalTopLeft
+    };
+
+    var func = function(obj){
+        var id = obj.getCellIdByDiagonalTopLeft();
+        obj.id = id;
+
+        if(obj.getFirstPartOfId() > 8){
+            return;
+        }
+
+        if(obj.getSecondPartOfId() < 'a'.charCodeAt(0)){
+            return;
+        }
+
+        cellIds.push(id);
+
+        func(obj);
+    };
+
+    func(obj);
+
+    return cellIds;
+};
+
+// Получить все клетки по диагонали вверх и влево
+// граница по Y - 8, по X - h
+CheckCell.prototype.getAllCellIdsByDiagonalTopRight = function(){
+    var cellIds = [];
+
+    // Навеяло интересно решение благодаря js
+    // взял из основного объекта часть, которая нужна для решения
+    // данной задачи
+    var obj = {
+        id: this.id,
+        getFirstPartOfId: CheckCell.prototype.getFirstPartOfId,
+        getSecondPartOfId: CheckCell.prototype.getSecondPartOfId,
+        getCellIdByDiagonalTopRight: CheckCell.prototype.getCellIdByDiagonalTopRight
+    };
+
+    var func = function(obj){
+        var id = obj.getCellIdByDiagonalTopRight();
+        obj.id = id;
+
+        if(obj.getFirstPartOfId() > 8){
+            return;
+        }
+
+        if(obj.getSecondPartOfId() > 'h'.charCodeAt(0)){
+            return;
+        }
+
+        cellIds.push(id);
+
+        func(obj);
+    };
+
+    func(obj);
+
+    return cellIds;
 };
 
 // Поле является убийцей

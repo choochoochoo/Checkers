@@ -31,9 +31,21 @@ var CheckBoard = function() {
         '8b', '8d', '8f', '8h'
     ];
 
+    // Позиции в которых шашки игрока 1 становятся дамками
+    this.queenPlaceForPlayer1 = [
+        '8b', '8d', '8f', '8h'
+    ];
+
+    // Позиции в которых шашки игрока 2 становятся дамками
+    this.queenPlaceForPlayer2 = [
+        '1a', '1c', '1e', '1g',
+    ];
+
     // Установить начальное положение шашек
     this.defaultSet = function(){
+        this.game.currentPlayer = 1;
         this.defaultSetPlayer1();
+        this.game.currentPlayer = 2;
         this.defaultSetPlayer2();
     };
 
@@ -100,4 +112,19 @@ var CheckBoard = function() {
             cells[i].disable();
         }
     };
+
+    // Поле есть среди полей для становления дамкой
+    this.isIntoQueenPlaces = function(id){
+        if(this.game.getCurrentPlayer() === 1){
+            if(this.queenPlaceForPlayer1.filter(function(item){ return item === id; }).length > 0){
+                return true;
+            }
+        }else{
+            if(this.queenPlaceForPlayer2.filter(function(item){ return item === id; }).length > 0){
+                return true;
+            }
+        }
+
+        return false;
+    }
 };

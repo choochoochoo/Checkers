@@ -148,10 +148,18 @@ Checker.prototype.enabled = function(){
     this.isEnabled = true;
 
     if(this.player === 1){
-        this.realObj.attr({'src': 'img/white-checker-enabled.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/white-checker-queen-enabled.png'});
+        }else{
+            this.realObj.attr({'src': 'img/white-checker-enabled.png'});
+        }
     }
     else{
-        this.realObj.attr({'src': 'img/black-checker-enabled.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/black-checker-queen-enabled.png'});
+        }else{
+            this.realObj.attr({'src': 'img/black-checker-enabled.png'});
+        }
     }
 };
 
@@ -161,10 +169,18 @@ Checker.prototype.disabled = function(){
     this.isEnabled = false;
 
     if(this.player === 1){
-        this.realObj.attr({'src': 'img/white-checker.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/white-checker-queen.png'});
+        }else{
+            this.realObj.attr({'src': 'img/white-checker.png'});
+        }
     }
     else{
-        this.realObj.attr({'src': 'img/black-checker.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/black-checker-queen.png'});
+        }else{
+            this.realObj.attr({'src': 'img/black-checker.png'});
+        }
     }
 };
 
@@ -174,10 +190,18 @@ Checker.prototype.select = function(){
     this.isSelected = true;
 
     if(this.player === 1){
-        this.realObj.attr({'src': 'img/white-checker-selected.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/white-checker-queen-selected.png'});
+        }else{
+            this.realObj.attr({'src': 'img/white-checker-selected.png'});
+        }
     }
     else{
-        this.realObj.attr({'src': 'img/black-checker-selected.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/black-checker-queen-selected.png'});
+        }else{
+            this.realObj.attr({'src': 'img/black-checker-selected.png'});
+        }
     }
 };
 
@@ -187,10 +211,38 @@ Checker.prototype.deselect = function(){
     this.isSelected = false;
 
     if(this.player === 1){
-        this.realObj.attr({'src': 'img/white-checker-enabled.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/white-checker-queen-enabled.png'});
+        }else{
+            this.realObj.attr({'src': 'img/white-checker-enabled.png'});
+        }
     }
     else{
-        this.realObj.attr({'src': 'img/black-checker-enabled.png'});
+        if(this.isQueen()){
+            this.realObj.attr({'src': 'img/black-checker-queen-enabled.png'});
+        }else{
+            this.realObj.attr({'src': 'img/black-checker-enabled.png'});
+        }
+    }
+};
+
+// Сделать дамкой
+Checker.prototype.makeQueen = function(){
+    if(this.player === 1){
+        this.realObj.attr({'src': 'img/white-checker-queen.png'});
+    }
+    else{
+        this.realObj.attr({'src': 'img/black-checker-queen.png'});
+    }
+};
+
+// Является ли шашка дамкой
+Checker.prototype.isQueen = function(){
+    if(this.realObj.attr('src').indexOf('queen') > -1){
+        return true;
+    }
+    else{
+        return false;
     }
 };
 

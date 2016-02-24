@@ -19,5 +19,5 @@ describe("Check board", function() {
         game.play();
         var cell = game.checkBoard.getCellById('3a');
         expect(cell.id).toBe('3a');
-    });
+    })
 });

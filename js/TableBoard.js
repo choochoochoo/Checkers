@@ -1,6 +1,5 @@
 // Класс ТАБЛО
 var TableBoard = function(){
-
     // Получить контейнер с текущим игроком
     this.getTableBoardPlayer = function(){
         return $('#player');

@@ -53,4 +53,27 @@ describe("CheckCell", function() {
         var id = cell.getCellIdByDiagonalBottomRight();
         expect(id).toEqual('5e');
     });
+
+    it("Получить всю диагональ вверх и влево", function(){
+        game.play();
+        var cell = game.checkBoard.getCellById('3e');
+
+        var cellIds = cell.getAllCellIdsByDiagonalTopLeft();
+        expect(cellIds.length).toEqual(4);
+        expect(cellIds[0]).toEqual('4d');
+        expect(cellIds[1]).toEqual('5c');
+        expect(cellIds[2]).toEqual('6b');
+        expect(cellIds[3]).toEqual('7a');
+    });
+
+    it("Получить всю диагональ вверх и вправо", function(){
+        game.play();
+        var cell = game.checkBoard.getCellById('3e');
+
+        var cellIds = cell.getAllCellIdsByDiagonalTopRight();
+        expect(cellIds.length).toEqual(3);
+        expect(cellIds[0]).toEqual('4f');
+        expect(cellIds[1]).toEqual('5g');
+        expect(cellIds[2]).toEqual('6h');
+    });
 });
