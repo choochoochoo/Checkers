@@ -71,6 +71,11 @@ CheckCell.prototype.getRealObj = function(){
     return $(this.realObj);
 };
 
+// Поле является убийцей
+CheckCell.prototype.isKiller = function(){
+    return !!this.killedChecker;
+};
+
 // Сделать область доступной для хода
 CheckCell.prototype.enable = function(){
     this.isEnable = true;
@@ -187,7 +192,76 @@ CheckCell.prototype.getAllCellIdsByDiagonalTopRight = function(){
     return cellIds;
 };
 
-// Поле является убийцей
-CheckCell.prototype.isKiller = function(){
-    return !!this.killedChecker;
+// Получить все клетки по диагонали вниз и влево
+// граница по Y - 1, по X - a
+CheckCell.prototype.getAllCellIdsByDiagonalBottomLeft = function(){
+    var cellIds = [];
+
+    // Навеяло интересно решение благодаря js
+    // взял из основного объекта часть, которая нужна для решения
+    // данной задачи
+    var obj = {
+        id: this.id,
+        getFirstPartOfId: CheckCell.prototype.getFirstPartOfId,
+        getSecondPartOfId: CheckCell.prototype.getSecondPartOfId,
+        getCellIdByDiagonalBottomLeft: CheckCell.prototype.getCellIdByDiagonalBottomLeft
+    };
+
+    var func = function(obj){
+        var id = obj.getCellIdByDiagonalBottomLeft();
+        obj.id = id;
+
+        if(obj.getFirstPartOfId() < 1){
+            return;
+        }
+
+        if(obj.getSecondPartOfId() < 'a'.charCodeAt(0)){
+            return;
+        }
+
+        cellIds.push(id);
+
+        func(obj);
+    };
+
+    func(obj);
+
+    return cellIds;
+};
+
+// Получить все клетки по диагонали вниз и влево
+// граница по Y - 1, по X - h
+CheckCell.prototype.getAllCellIdsByDiagonalBottomRight = function(){
+    var cellIds = [];
+
+    // Навеяло интересно решение благодаря js
+    // взял из основного объекта часть, которая нужна для решения
+    // данной задачи
+    var obj = {
+        id: this.id,
+        getFirstPartOfId: CheckCell.prototype.getFirstPartOfId,
+        getSecondPartOfId: CheckCell.prototype.getSecondPartOfId,
+        getCellIdByDiagonalBottomRightt: CheckCell.prototype.getCellIdByDiagonalBottomRight
+    };
+
+    var func = function(obj){
+        var id = obj.getCellIdByDiagonalBottomRightt();
+        obj.id = id;
+
+        if(obj.getFirstPartOfId() < 1){
+            return;
+        }
+
+        if(obj.getSecondPartOfId() > 'h'.charCodeAt(0)){
+            return;
+        }
+
+        cellIds.push(id);
+
+        func(obj);
+    };
+
+    func(obj);
+
+    return cellIds;
 };

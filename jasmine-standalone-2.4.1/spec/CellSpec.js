@@ -76,4 +76,24 @@ describe("CheckCell", function() {
         expect(cellIds[1]).toEqual('5g');
         expect(cellIds[2]).toEqual('6h');
     });
+
+    it("Получить всю диагональ вниз и влево", function(){
+        game.play();
+        var cell = game.checkBoard.getCellById('3e');
+
+        var cellIds = cell.getAllCellIdsByDiagonalBottomLeft();
+        expect(cellIds.length).toEqual(2);
+        expect(cellIds[0]).toEqual('2d');
+        expect(cellIds[1]).toEqual('1c');
+    });
+
+    it("Получить всю диагональ вниз и вправо", function(){
+        game.play();
+        var cell = game.checkBoard.getCellById('3e');
+
+        var cellIds = cell.getAllCellIdsByDiagonalBottomRight();
+        expect(cellIds.length).toEqual(2);
+        expect(cellIds[0]).toEqual('2f');
+        expect(cellIds[1]).toEqual('1g');
+    });
 });
