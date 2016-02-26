@@ -49,7 +49,7 @@ var Game = function(){
         this.checkBoard.cells.forEach(function(item){ item.default(); });
 
         // Обнулит состояние всех шашек
-       // this.checkBoard.checkers = [];
+        this.checkBoard.checkers = [];
 
         this.checkBoard.defaultSet();
         this.round = 1;
