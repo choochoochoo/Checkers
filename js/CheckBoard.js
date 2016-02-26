@@ -113,6 +113,7 @@ var CheckBoard = function() {
         return false;
     }
 
+    // Получить все клетки которые являются убийцами
     this.getAllKillCells = function(){
         return this.cells.filter(function(item){
             return !!item.killedChecker;
