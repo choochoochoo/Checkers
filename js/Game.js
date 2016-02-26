@@ -1,5 +1,5 @@
 // Класс ИГРА
-var Game = function(tableBoard){
+var Game = function(){
     // Номер раунда
     this.round = 0;
 
@@ -7,7 +7,9 @@ var Game = function(tableBoard){
     this.currentPlayer = null;
 
     // Табло
-    this.tableBoard = tableBoard;
+    this.tableBoard = new TableBoard();
+    this.checkBoard = new CheckBoard();
+    this.checkBoard.game = this;
 
     // Привязка к событию
     this.tableBoard.getStartButton().click(function(){
@@ -40,15 +42,17 @@ var Game = function(tableBoard){
 
     // Начать игру
     this.play = function () {
-
         // стереть старые картинки
         $('.cell img').remove();
 
-        this.checkBoard = new CheckBoard();
-        this.checkBoard.game = this;
+        // Обнулить состояния всеш клеток
+        this.checkBoard.cells.forEach(function(item){ item.default(); });
+
+        // Обнулит состояние всех шашек
+       // this.checkBoard.checkers = [];
 
         this.checkBoard.defaultSet();
-        this.changeRound();
+        this.round = 1;
         this.currentPlayer = 1;
         this.tableBoard.writeOnTableBoardPlayer(this.getCurrentPlayer());
         this.tableBoard.writeOnTableBoardRound(this.getRound());
@@ -134,13 +138,13 @@ var Game = function(tableBoard){
         this.disabledCheckers();
 
         if(this.isTheEndForPlayer(1)){
-            tableBoard.writeOnTableBoardWinner(2);
+            this.tableBoard.writeOnTableBoardWinner(2);
             alert('Победил игрок: ' + 2);
             return;
         }
 
         if(this.isTheEndForPlayer(2)){
-            tableBoard.writeOnTableBoardWinner(1);
+            this.tableBoard.writeOnTableBoardWinner(1);
             alert('Победил игрок: ' + 1);
             return;
         }
@@ -148,8 +152,8 @@ var Game = function(tableBoard){
         this.enablePossibleCheckers(this.findPossible());
         this.changeRound();
 
-        tableBoard.writeOnTableBoardPlayer(this.currentPlayer);
-        tableBoard.writeOnTableBoardRound(this.round);
+        this.tableBoard.writeOnTableBoardPlayer(this.currentPlayer);
+        this.tableBoard.writeOnTableBoardRound(this.round);
 
         this.checkBoard.selectedChecker.deselect();
     };

@@ -2,7 +2,7 @@ describe("Game algorithm for attack", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new TableBoard());
+        game = new Game();
     });
 
     it("Если рядом шашка противника доступная для удара нужно активировать клетку через одну", function() {
@@ -199,8 +199,6 @@ describe("Game algorithm for attack", function() {
     });
 
     it("У дамки должна быть возможность хода", function(){
-        game.checkBoard = new CheckBoard();
-        game.checkBoard.game = game;
         game.currentPlayer = 1;
         game.checkBoard.defaultSetPlayer1();
 

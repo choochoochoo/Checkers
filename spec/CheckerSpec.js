@@ -2,9 +2,7 @@ describe("Checker spec", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new TableBoard());
-        game.checkBoard = new CheckBoard();
-        game.checkBoard.game = game;
+        game = new Game();;
     });
 
     it('Активировать шашку для игрока 1', function(){

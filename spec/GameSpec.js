@@ -2,21 +2,7 @@ describe("Game", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new TableBoard());
-    });
-
-    it("В начале игры ходит игрок должно быть 24 картинки шашек", function() {
-        game.play();
-
-        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
-        var cell_4b = game.checkBoard.getCellById('4b');
-        cell_4b.setChecker(checker);
-
-        game.play();
-
-        var checkers = $('.cell img');
-
-        expect(checkers.length).toEqual(24);
+        game = new Game();
     });
 
     it("В начале игры ходит игрок - 1", function() {
@@ -181,8 +167,6 @@ describe("Game", function() {
     });
 
     it("Получить все дамки которыми можно сходить", function(){
-        game.checkBoard = new CheckBoard();
-        game.checkBoard.game = game;
         game.currentPlayer = 1;
         game.checkBoard.defaultSetPlayer1();
 
@@ -209,5 +193,118 @@ describe("Game", function() {
         }
 
         expect(game.isTheEndForPlayer(1)).toBe(true);
+    });
+
+    it("В начале игры ходит игрок должно быть 24 картинки шашек", function() {
+        game.play();
+
+        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        var cell_4b = game.checkBoard.getCellById('4b');
+        cell_4b.setChecker(checker);
+
+        game.play();
+
+        var checkers = $('.cell img');
+
+        expect(checkers.length).toEqual(24);
+    });
+
+    it("После начала второй игры не должно быть клеток с шашками кроме дефолтных", function(){
+        game.play();
+
+        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        var cell_4b = game.checkBoard.getCellById('4b');
+        cell_4b.setChecker(checker);
+
+        game.play();
+
+        var cellsWithCheckers = game.checkBoard.cells.filter(function(item){
+            return item.hasChecker();
+        });
+
+        expect(cellsWithCheckers.length).toEqual(24);
+    });
+
+    it("После начала второй игры не должно быть клеток убийц", function(){
+        game.currentPlayer = 1;
+        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        game.checkBoard.checkers.push(checker);
+        var cell_7e = game.checkBoard.getCellById('7e');
+        cell_7e.setChecker(checker);
+        checker.makeQueen();
+        checker.enable();
+
+        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        game.checkBoard.checkers.push(checker2);
+        var cell_5c = game.checkBoard.getCellById('5c');
+        cell_5c.setChecker(checker2);
+
+        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        game.checkBoard.checkers.push(checker3);
+
+        checker.clickHandler();
+
+        var killCells = game.checkBoard.getAllKillCells();
+        expect(killCells.length).toEqual(2);
+
+        game.play();
+
+        killCells = game.checkBoard.getAllKillCells();
+
+        expect(killCells.length).toEqual(0);
+    });
+
+    it("После начала второй игры не должно быть активных клеток", function(){
+        game.currentPlayer = 1;
+        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        game.checkBoard.checkers.push(checker);
+        var cell_7e = game.checkBoard.getCellById('7e');
+        cell_7e.setChecker(checker);
+        checker.makeQueen();
+        checker.enable();
+
+        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        game.checkBoard.checkers.push(checker2);
+        var cell_5c = game.checkBoard.getCellById('5c');
+        cell_5c.setChecker(checker2);
+
+        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        game.checkBoard.checkers.push(checker3);
+
+        checker.clickHandler();
+
+        game.play();
+
+        var enableCells = game.checkBoard.getEnableCells();
+
+        expect(enableCells.length).toEqual(0);
+    });
+
+    it("После начала второй игры не должно быть выбранны шашек", function(){
+        game.currentPlayer = 1;
+        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        game.checkBoard.checkers.push(checker);
+        var cell_7e = game.checkBoard.getCellById('7e');
+        cell_7e.setChecker(checker);
+        checker.makeQueen();
+        checker.enable();
+
+        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        game.checkBoard.checkers.push(checker2);
+        var cell_5c = game.checkBoard.getCellById('5c');
+        cell_5c.setChecker(checker2);
+
+        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        game.checkBoard.checkers.push(checker3);
+
+        checker.clickHandler();
+
+        game.play();
+
+        var selectedCheckers = game.checkBoard.checkers.filter(function(item){
+            return item.isSelected();
+        });
+
+        expect(selectedCheckers.length).toEqual(0);
     });
 });

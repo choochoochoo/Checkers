@@ -14,6 +14,9 @@ var CheckCell = function(id, checkBoard){
     // Убиваемая данным полем шашка
     this.killedChecker = null;
 
+    // Доступность для хода
+    this._isEnabled = false;
+
     // Привязать событие клика к клетке
     $(this.realObj).click(this.clickHandler.bind(this));
 };
@@ -88,19 +91,33 @@ CheckCell.prototype.hasChecker = function(){
     return !!this.checker;
 };
 
+// Установить дефолтное состояние клетки
+CheckCell.prototype.default = function(){
+    this.checker = null;
+    this.killedChecker = null;
+    this.disable();
+};
+
 // Доступность для хода
 CheckCell.prototype.isEnabled = function(){
-    return this.getRealObj().css('background-color') === "rgb(189, 34, 34)";
+    return this._isEnabled;
 };
 
 // Сделать область доступной для хода
 CheckCell.prototype.enable = function(){
+    this._isEnabled = true;
     this.getRealObj().css({backgroundColor: "rgb(189, 34, 34)"});
 };
 
 // Сделать область недоступной для хода
 CheckCell.prototype.disable = function(){
-    this.getRealObj().css({backgroundColor: 'silver'});
+    this._isEnabled = false;
+
+    if(this.getRealObj().hasClass('black')){
+        this.getRealObj().css({backgroundColor: 'silver'});
+    }else{
+        this.getRealObj().css({backgroundColor: 'ivory'});
+    }
 };
 
 // Получить первую часть id
