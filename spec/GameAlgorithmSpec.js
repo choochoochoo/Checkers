@@ -207,7 +207,7 @@ describe("Game algorithm for attack", function() {
         cell_8f.setChecker(checker);
 
         var activeCheckers = game.findPossible();
-        game.enablePossibleCheckers(activeCheckers);
+        game.enableCheckers(activeCheckers);
         expect(activeCheckers.length).toBe(6);
         expect(checker.isEnabled()).toBe(true);
     });

@@ -73,7 +73,7 @@ describe("Game", function() {
         expect(enabled[2].isEnabled()).toBe(true);
         expect(enabled[3].isEnabled()).toBe(true);
 
-        game.disabledCheckers();
+        game.disabledAllCheckers();
 
         expect(enabled[0].isEnabled()).toBe(false);
         expect(enabled[1].isEnabled()).toBe(false);
@@ -192,7 +192,7 @@ describe("Game", function() {
 
         }
 
-        expect(game.isTheEndForPlayer(1)).toBe(true);
+        expect(game.hasPlayerLiveCheckers(1)).toBe(true);
     });
 
     it("В начале игры ходит игрок должно быть 24 картинки шашек", function() {
