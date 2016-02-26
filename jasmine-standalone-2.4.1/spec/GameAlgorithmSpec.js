@@ -94,10 +94,10 @@ describe("Game algorithm for attack", function() {
         enableCells[0].clickHandler();
 
         // Шашка должна быть убита
-        expect(checker1.isKilled).toBe(true);
+        expect(checker1.isKilled()).toBe(true);
 
         // На поле не должно быть шашки
-        expect(cell1.isChecker).toBe(false);
+        expect(cell1.hasChecker()).toBe(false);
 
         // У шашки не дожно быть поля
         expect(checker1.cell).toEqual(null);
@@ -195,7 +195,20 @@ describe("Game algorithm for attack", function() {
         expect(game.getCurrentPlayer()).toEqual(2);
         expect(game.checkBoard.getEnableCells().length).toEqual(1);
         var cell_5g = game.checkBoard.getCellById('5g');
-        expect(cell_5g.isEnable).toBe(true);
+        expect(cell_5g.isEnabled()).toBe(true);
     });
 
+    it("У дамки должна быть возможность хода", function(){
+        game.currentPlayer = 1;
+        game.checkBoard.defaultSetPlayer1();
+
+        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        var cell_8f = game.checkBoard.getCellById('8f');
+        cell_8f.setChecker(checker);
+
+        var activeCheckers = game.findPossible();
+        game.enablePossibleCheckers(activeCheckers);
+        expect(activeCheckers.length).toBe(6);
+        expect(checker.isEnabled()).toBe(true);
+    });
 });

@@ -8,6 +8,10 @@ var CheckBoard = function() {
     // Создать массив клеток
     var cellsObj = $('.cell');
     for (var i = 0; i < cellsObj.length; i++){
+        // Установит цвет ячеек по умолчанию
+        if($(cellsObj[i]).hasClass('black')){
+            $(cellsObj[i]).css({backgroundColor: 'silver'});
+        }
         this.cells.push(new CheckCell(cellsObj[i].id, this));
     }
 
@@ -76,25 +80,6 @@ var CheckBoard = function() {
         return this.checkers.filter( function(item){ return item.player === player &&  item.id === id; } )[0];
     };
 
-    // Активировать шашку
-    this.setSelectedChecker = function(checker){
-        if(this.selectedChecker){
-            this.selectedChecker.deselect();
-
-            // Сделать старые активные поля неактивными
-            this.disableAllCells();
-        }
-        this.selectedChecker = checker;
-    };
-
-    // Деактивировать шашку
-    this.deselectSelectedChecker = function(checker){
-        if(this.selectedChecker){
-            this.selectedChecker.isSelected = false;
-            this.selectedChecker = null;
-        }
-    };
-
     // Получить клетку по id
     this.getCellById = function(id){
         return this.cells.filter( function(item){ return item.id === id; })[0];
@@ -102,7 +87,7 @@ var CheckBoard = function() {
 
     // Получить все активные клетки
     this.getEnableCells = function(){
-        return this.cells.filter( function(item){ return item.isEnable; });
+        return this.cells.filter( function(item){ return item.isEnabled(); });
     };
 
     // Деактивировать все активные клетки
@@ -127,4 +112,10 @@ var CheckBoard = function() {
 
         return false;
     }
+
+    this.getAllKillCells = function(){
+        return this.cells.filter(function(item){
+            return !!item.killedChecker;
+        });
+    };
 };

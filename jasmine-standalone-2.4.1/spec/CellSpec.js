@@ -18,11 +18,11 @@ describe("CheckCell", function() {
         cell1.clickHandler();
 
         // старая клетка
-        expect(prevCell.isChecker).toBe(false);
+        expect(prevCell.hasChecker()).toBe(false);
         expect(prevCell.checker).toBe(null);
 
         // новая
-        expect(cell1.isChecker).toBe(true);
+        expect(cell1.hasChecker()).toBe(true);
         expect(cell1.checker.cell.id).toBe('4b');
     });
 
@@ -95,5 +95,36 @@ describe("CheckCell", function() {
         expect(cellIds.length).toEqual(2);
         expect(cellIds[0]).toEqual('2f');
         expect(cellIds[1]).toEqual('1g');
+    });
+
+    it("После удара нужно стереть во всех полях свойство для убийства", function(){
+        game.currentPlayer = 1;
+        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        game.checkBoard.checkers.push(checker);
+        var cell_7e = game.checkBoard.getCellById('7e');
+        cell_7e.setChecker(checker);
+        checker.makeQueen();
+        checker.enable();
+
+        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        game.checkBoard.checkers.push(checker2);
+        var cell_5c = game.checkBoard.getCellById('5c');
+        cell_5c.setChecker(checker2);
+
+        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        game.checkBoard.checkers.push(checker3);
+
+        checker.clickHandler();
+
+        var killCells = game.checkBoard.getAllKillCells();
+        expect(killCells.length).toEqual(2);
+
+        var cell_3a = game.checkBoard.getCellById('3a');
+
+        cell_3a.clickHandler();
+
+        killCells = game.checkBoard.getAllKillCells();
+
+        expect(killCells.length).toEqual(0);
     });
 });

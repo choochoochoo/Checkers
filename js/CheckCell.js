@@ -11,12 +11,6 @@ var CheckCell = function(id, checkBoard){
     // Шашка расположенная на клетке
     this.checker = null;
 
-    // Есть шашка или нет
-    this.isChecker = false;
-
-    // Доступность для хода
-    this.isEnable = false;
-
     // Убиваемая данным полем шашка
     this.killedChecker = null;
 
@@ -26,13 +20,28 @@ var CheckCell = function(id, checkBoard){
 
 // Обработчик события клика на клетку
 CheckCell.prototype.clickHandler = function(){
-    if(this.isEnable){
+    if(this.isEnabled()){
+
+        console.log('checker: ' + this.checkBoard.selectedChecker.id
+            + ', player: ' + this.checkBoard.selectedChecker.player
+            + ', old cell: ' + this.checkBoard.selectedChecker.cell.id
+            + ', new cell: ' + this.id);
+
         this.setChecker(this.checkBoard.selectedChecker);
 
         // Убить шашку
         if(this.isKiller()){
+
+            console.log('killed checker: ' + this.killedChecker.id
+                + ', player: ' + this.killedChecker.player);
+
             this.killedChecker.kill();
-            this.killedChecker = null;
+
+            // после убийства клетки нужно стереть все упоминания в полях
+            var killCells = this.checkBoard.getAllKillCells()
+            for(var i = 0; i < killCells.length; i++){
+                killCells[i].killedChecker = null;
+            }
 
             // Здесь нужно узнать можно ли еще кого то убить этой шашкой
             var enemiesNear = this.checkBoard.selectedChecker.getEnemiesNear();
@@ -53,11 +62,9 @@ CheckCell.prototype.setChecker = function(ch){
     $('#' + this.id).html(ch.getRealObj());
 
     // у старой клетки сотрем присутствие шашки
-    ch.cell.isChecker = false;
     ch.cell.checker = null;
 
     // Добавим шашку в новую
-    this.isChecker = true;
     this.checker = ch;
     ch.cell = this;
 
@@ -76,15 +83,23 @@ CheckCell.prototype.isKiller = function(){
     return !!this.killedChecker;
 };
 
+// На поле есть шашка
+CheckCell.prototype.hasChecker = function(){
+    return !!this.checker;
+};
+
+// Доступность для хода
+CheckCell.prototype.isEnabled = function(){
+    return this.getRealObj().css('background-color') === "rgb(189, 34, 34)";
+};
+
 // Сделать область доступной для хода
 CheckCell.prototype.enable = function(){
-    this.isEnable = true;
-    this.getRealObj().css({backgroundColor: '#BD2222'});
+    this.getRealObj().css({backgroundColor: "rgb(189, 34, 34)"});
 };
 
 // Сделать область недоступной для хода
 CheckCell.prototype.disable = function(){
-    this.isEnable = false;
     this.getRealObj().css({backgroundColor: 'silver'});
 };
 
