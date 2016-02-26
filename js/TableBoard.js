@@ -29,4 +29,9 @@ var TableBoard = function(){
     this.writeOnTableBoardWinner = function(text){
         this.getTableBoardWinner().html(text).show();
     };
+
+    // Получить контейнер с кнопкой
+    this.getStartButton = function(){
+        return $('#start-button');
+    };
 };

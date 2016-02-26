@@ -2,7 +2,9 @@ describe("Check board", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new CheckBoard(), new TableBoard());
+        game = new Game(new TableBoard());
+        game.checkBoard = new CheckBoard();
+        game.checkBoard.game = game;
     });
 
     it("Получить шашку по игроку и id", function() {

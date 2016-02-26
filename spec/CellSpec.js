@@ -2,7 +2,7 @@ describe("CheckCell", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new CheckBoard(), new TableBoard());
+        game = new Game(new TableBoard());
     });
 
     it("После перемещения в предыдущей клетке не должно быть шашки", function() {
@@ -98,6 +98,8 @@ describe("CheckCell", function() {
     });
 
     it("После удара нужно стереть во всех полях свойство для убийства", function(){
+        game.checkBoard = new CheckBoard();
+        game.checkBoard.game = game;
         game.currentPlayer = 1;
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);

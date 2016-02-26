@@ -1,17 +1,18 @@
 // Класс ИГРА
-var Game = function(checkBoard, tableBoard){
+var Game = function(tableBoard){
     // Номер раунда
     this.round = 0;
 
     // Текущий игрок
     this.currentPlayer = null;
 
-    // Доска с шашками
-    this.checkBoard = checkBoard;
-    checkBoard.game = this;
-
     // Табло
     this.tableBoard = tableBoard;
+
+    // Привязка к событию
+    this.tableBoard.getStartButton().click(function(){
+        this.play();
+    }.bind(this));
 
     // Получить раунд
     this.getRound = function(){
@@ -39,6 +40,13 @@ var Game = function(checkBoard, tableBoard){
 
     // Начать игру
     this.play = function () {
+
+        // стереть старые картинки
+        $('.cell img').remove();
+
+        this.checkBoard = new CheckBoard();
+        this.checkBoard.game = this;
+
         this.checkBoard.defaultSet();
         this.changeRound();
         this.currentPlayer = 1;

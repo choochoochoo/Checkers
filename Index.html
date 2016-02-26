@@ -100,7 +100,8 @@
 
     <div id="tableboard">
         Ходит игрок:&nbsp;<span id="player"></span>&nbsp;Раунд:&nbsp<span id="round"></span><br>
-        <b>Победил игрок: <span id="winner"></span> </b></div>
+        <b>Победил игрок: <span id="winner"></span> </b>
+        <input type="button" value="Начать игру" id="start-button">
     </div>
 
     <script src="lib/jquery-2.2.0.js"></script>
@@ -111,10 +112,8 @@
     <script src="js/Checker.js"></script>
     <script>
         $(document).ready(function() {
-            var checkBoard = new CheckBoard();
             var tableBoard = new TableBoard();
-            var game = new Game(checkBoard, tableBoard);
-            game.play();
+            var game = new Game(tableBoard);
         });
     </script>
 </body>

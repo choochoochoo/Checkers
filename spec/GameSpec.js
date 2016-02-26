@@ -2,7 +2,21 @@ describe("Game", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game(new CheckBoard(), new TableBoard());
+        game = new Game(new TableBoard());
+    });
+
+    it("В начале игры ходит игрок должно быть 24 картинки шашек", function() {
+        game.play();
+
+        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        var cell_4b = game.checkBoard.getCellById('4b');
+        cell_4b.setChecker(checker);
+
+        game.play();
+
+        var checkers = $('.cell img');
+
+        expect(checkers.length).toEqual(24);
     });
 
     it("В начале игры ходит игрок - 1", function() {
@@ -167,6 +181,8 @@ describe("Game", function() {
     });
 
     it("Получить все дамки которыми можно сходить", function(){
+        game.checkBoard = new CheckBoard();
+        game.checkBoard.game = game;
         game.currentPlayer = 1;
         game.checkBoard.defaultSetPlayer1();
 
