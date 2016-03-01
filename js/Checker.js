@@ -62,7 +62,7 @@ Checker.prototype.clickHandler = function(){
                     for(var j = 0; j < killerCells.length; j++){
                         if(!killerCells[j].hasChecker()){
                             // Это поле убивает эту шашку
-                            killerCells[j].killedChecker = enemies[i].cell.checker;
+                            killerCells[j].setKilledChecker(enemies[i].cell.getChecker());
                             killerCells[j].enable();
                         }
                     }
@@ -71,7 +71,7 @@ Checker.prototype.clickHandler = function(){
                 for(var i = 0; i < enemies.length; i++){
                     killerCell = this.getCellByPos(enemies[i].cell, enemies[i].pos);
                     // Это поле убивает эту шашку
-                    killerCell.killedChecker = enemies[i].cell.checker;
+                    killerCell.setKilledChecker(enemies[i].cell.getChecker());
                     killerCell.enable();
                 }
             }
@@ -104,7 +104,7 @@ Checker.prototype.getNearCells = function(){
     var cells = [];
     var cell = null;
 
-    if(this.checkBoard.game.getCurrentPlayer() === 1){
+    if(this.checkBoard.game.getCurrentPlayer().getId() === this.checkBoard.game.getPlayer1().getId()){
 
         cell = this.checkBoard.getCellById(this.cell.getCellIdByDiagonalTopLeft());
         if(cell){
@@ -166,7 +166,7 @@ Checker.prototype.getNearCellsWithoutPlayer = function(){
 // Получить врагов рядом
 Checker.prototype.getEnemiesNear = function(){
     return this.getNearCellsWithoutPlayer().filter(function(item){
-        return item.cell.hasChecker() && item.cell.checker.isEnemy() && item.cell.checker.isUnderAttack(item.pos);
+        return item.cell.hasChecker() && item.cell.getChecker().isEnemy() && item.cell.getChecker().isUnderAttack(item.pos);
     });
 };
 
@@ -190,7 +190,7 @@ Checker.prototype.getNearCellsForQueen = function(){
 
         cell = this.checkBoard.getCellById(cellsIds[i]);
 
-        if(cell.hasChecker() && !cell.checker.isEnemy()){
+        if(cell.hasChecker() && !cell.getChecker().isEnemy()){
             break;
         }
 
@@ -202,7 +202,7 @@ Checker.prototype.getNearCellsForQueen = function(){
 
         cell = this.checkBoard.getCellById(cellsIds[i]);
 
-        if(cell.hasChecker() && !cell.checker.isEnemy()){
+        if(cell.hasChecker() && !cell.getChecker().isEnemy()){
             break;
         }
 
@@ -214,7 +214,7 @@ Checker.prototype.getNearCellsForQueen = function(){
 
         cell = this.checkBoard.getCellById(cellsIds[i]);
 
-        if(cell.hasChecker() && !cell.checker.isEnemy()){
+        if(cell.hasChecker() && !cell.getChecker().isEnemy()){
             break;
         }
 
@@ -225,7 +225,7 @@ Checker.prototype.getNearCellsForQueen = function(){
     for(var i = 0; i < cellsIds.length; i++){
         cell = this.checkBoard.getCellById(cellsIds[i]);
 
-        if(cell.hasChecker() && !cell.checker.isEnemy()){
+        if(cell.hasChecker() && !cell.getChecker().isEnemy()){
             break;
         }
 
@@ -243,7 +243,7 @@ Checker.prototype.getFreeCellNearForQueen = function(){
 // Получить врагов рядом для дамки (это по всем диагоналям)
 Checker.prototype.getEnemiesNearForQueen = function(){
     return this.getNearCellsForQueen().filter(function(item){
-        return item.cell.hasChecker() && item.cell.checker.isEnemy() && item.cell.checker.isUnderAttack(item.pos);
+        return item.cell.hasChecker() && item.cell.getChecker().isEnemy() && item.cell.getChecker().isUnderAttack(item.pos);
     });
 };
 
@@ -291,15 +291,14 @@ Checker.prototype.disable = function(){
 
 // Сделать шашку активной
 Checker.prototype.select = function(){
-    if(this.checkBoard.selectedChecker){
+    if(this.checkBoard.getSelectedChecker()){
         // Если была старая нужно снять с нее выбор
-        this.checkBoard.selectedChecker.deselect();
+        this.checkBoard.getSelectedChecker().deselect();
 
         // Сделать старые активные поля неактивными
         this.checkBoard.disableAllCells();
     }
 
-    this.checkBoard.selectedChecker = this;
 
     this._isSelected = true;
 
@@ -358,7 +357,7 @@ Checker.prototype.isQueen = function(){
 
 // Эта шашка не принадлежит текущему игроку
 Checker.prototype.isEnemy = function(){
-    return this.player !== this.checkBoard.game.getCurrentPlayer();
+    return this.player !== this.checkBoard.game.getCurrentPlayer().getId();
 };
 
 // Эта шашка убита
@@ -407,43 +406,32 @@ Checker.prototype.getDiagonalCellByPos = function(cellStart, pos){
 
     switch(pos) {
         case 'TopLeft':
-
             cellsIds = cellStart.getAllCellIdsByDiagonalTopLeft();
             for(var i = 0; i < cellsIds.length; i++){
-
                 cell = this.checkBoard.getCellById(cellsIds[i]);
-
-                if(cell.hasChecker() && !cell.checker.isEnemy()){
+                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
                     break;
                 }
-
                 cells.push(cell);
             }
-
             break;
         case 'TopRight':
             cellsIds = cellStart.getAllCellIdsByDiagonalTopRight();
             for(var i = 0; i < cellsIds.length; i++){
-
                 cell = this.checkBoard.getCellById(cellsIds[i]);
-
-                if(cell.hasChecker() && !cell.checker.isEnemy()){
+                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
                     break;
                 }
-
                 cells.push(cell);
             }
             break;
         case 'BottomLeft':
             cellsIds = cellStart.getAllCellIdsByDiagonalBottomLeft();
             for(var i = 0; i < cellsIds.length; i++){
-
                 cell = this.checkBoard.getCellById(cellsIds[i]);
-
-                if(cell.hasChecker() && !cell.checker.isEnemy()){
+                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
                     break;
                 }
-
                 cells.push(cell);
             }
             break;
@@ -451,11 +439,9 @@ Checker.prototype.getDiagonalCellByPos = function(cellStart, pos){
             cellsIds = cellStart.getAllCellIdsByDiagonalBottomRight();
             for(var i = 0; i < cellsIds.length; i++){
                 cell = this.checkBoard.getCellById(cellsIds[i]);
-
-                if(cell.hasChecker() && !cell.checker.isEnemy()){
+                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
                     break;
                 }
-
                 cells.push(cell);
             }
             break;
@@ -470,7 +456,7 @@ Checker.prototype.getDiagonalCellByPos = function(cellStart, pos){
 // Убить шашку
 Checker.prototype.kill = function(){
     this._isKilled = true;
-    this.cell.checker = null;
+    this.cell._checker = null;
     this.cell = null;
     this.realObj.hide();
 };

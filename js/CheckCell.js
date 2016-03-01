@@ -6,52 +6,52 @@ var CheckCell = function(id, checkBoard){
     this.checkBoard = checkBoard;
 
     // Объект dom
-    this.realObj = $('#' + this.id);
+    this._realObj = $('#' + this.id);
 
     // Шашка расположенная на клетке
-    this.checker = null;
+    this._checker = null;
 
     // Убиваемая данным полем шашка
-    this.killedChecker = null;
+    this._killedChecker = null;
 
     // Доступность для хода
     this._isEnabled = false;
 
     // Привязать событие клика к клетке
-    $(this.realObj).click(this.clickHandler.bind(this));
+    this._realObj.click(this.clickHandler.bind(this));
 };
 
 // Обработчик события клика на клетку
 CheckCell.prototype.clickHandler = function(){
     if(this.isEnabled()){
 
-        console.log('checker: ' + this.checkBoard.selectedChecker.id
-            + ', player: ' + this.checkBoard.selectedChecker.player
-            + ', old cell: ' + this.checkBoard.selectedChecker.cell.id
+        console.log('checker: ' + this.checkBoard.getSelectedChecker().id
+            + ', player: ' + this.checkBoard.getSelectedChecker().player
+            + ', old cell: ' + this.checkBoard.getSelectedChecker().cell.id
             + ', new cell: ' + this.id);
 
-        this.setChecker(this.checkBoard.selectedChecker);
+        this.setChecker(this.checkBoard.getSelectedChecker());
 
         // Убить шашку
         if(this.isKiller()){
 
-            console.log('killed checker: ' + this.killedChecker.id
-                + ', player: ' + this.killedChecker.player);
+            console.log('killed checker: ' + this.getKilledChecker().id
+                + ', player: ' + this.getKilledChecker().player);
 
-            this.killedChecker.kill();
+            this.getKilledChecker().kill();
 
             // после убийства клетки нужно стереть все упоминания в полях
-            var killCells = this.checkBoard.getAllKillCells()
+            var killCells = this.checkBoard.getAllKillCells();
             for(var i = 0; i < killCells.length; i++){
-                killCells[i].killedChecker = null;
+                killCells[i]._killedChecker = null;
             }
 
             // Здесь нужно узнать можно ли еще кого то убить этой шашкой
-            var enemiesNear = this.checkBoard.selectedChecker.getEnemiesNear();
+            var enemiesNear = this.checkBoard.getSelectedChecker().getEnemiesNear();
             // Если есть нужно не переключать игрока
             if(enemiesNear.length > 0){
                 this.checkBoard.disableAllCells();
-                this.checkBoard.selectedChecker.clickHandler();
+                this.checkBoard.getSelectedChecker().clickHandler();
                 return;
             }
         }
@@ -65,36 +65,51 @@ CheckCell.prototype.setChecker = function(ch){
     $('#' + this.id).html(ch.getRealObj());
 
     // у старой клетки сотрем присутствие шашки
-    ch.cell.checker = null;
+    ch.cell._checker = null;
 
     // Добавим шашку в новую
-    this.checker = ch;
+    this._checker = ch;
     ch.cell = this;
 
-    if(this.checkBoard.isIntoQueenPlaces(this.id)){
+    if(this.checkBoard.game.getCurrentPlayer().isQueenPlace(this.id)){
         ch.makeQueen();
     }
 };
 
+// Получить шашку
+CheckCell.prototype.getChecker = function(ch){
+    return this._checker;
+};
+
+// Получить убиваемую шашку данной клеткой
+CheckCell.prototype.getKilledChecker = function(){
+    return this._killedChecker;
+};
+
+// Установить убиваемую шашку данной клеткой
+CheckCell.prototype.setKilledChecker = function(checker){
+    this._killedChecker = checker;
+};
+
 // Поставить шашку на клетку
 CheckCell.prototype.getRealObj = function(){
-    return $(this.realObj);
+    return this._realObj;
 };
 
 // Поле является убийцей
 CheckCell.prototype.isKiller = function(){
-    return !!this.killedChecker;
+    return !!this.getKilledChecker();
 };
 
 // На поле есть шашка
 CheckCell.prototype.hasChecker = function(){
-    return !!this.checker;
+    return !!this._checker;
 };
 
 // Установить дефолтное состояние клетки
 CheckCell.prototype.default = function(){
-    this.checker = null;
-    this.killedChecker = null;
+    this._checker = null;
+    this._killedChecker = null;
     this.disable();
 };
 

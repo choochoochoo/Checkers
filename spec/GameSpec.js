@@ -7,7 +7,7 @@ describe("Game", function() {
 
     it("В начале игры ходит игрок - 1", function() {
         game.play();
-        expect(game.getCurrentPlayer()).toEqual(1);
+        expect(game.getCurrentPlayer().getId()).toEqual(1);
     });
 
     it("В начале игры раунд - 1", function() {
@@ -43,17 +43,17 @@ describe("Game", function() {
 
     it("Смена игрока", function() {
         game.play();
-        expect(game.getCurrentPlayer()).toEqual(1);
+        expect(game.getCurrentPlayer().getId()).toEqual(1);
         game.changePlayer();
-        expect(game.getCurrentPlayer()).toEqual(2);
+        expect(game.getCurrentPlayer().getId()).toEqual(2);
         game.changePlayer();
-        expect(game.getCurrentPlayer()).toEqual(1);
+        expect(game.getCurrentPlayer().getId()).toEqual(1);
     });
 
     it("В начале игры имеют ход верхние шашки белого игрока", function() {
         game.play();
 
-        var enabled = game.getEnableCheckers();
+        var enabled = game.checkBoard.getEnableCheckers();
 
         expect(enabled.length).toEqual(4);
         expect(enabled[0].isEnabled()).toBe(true);
@@ -65,7 +65,7 @@ describe("Game", function() {
     it("Сделать все шашки не активными", function() {
         game.play();
 
-        var enabled = game.getEnableCheckers();
+        var enabled = game.checkBoard.getEnableCheckers();
 
         expect(enabled.length).toEqual(4);
         expect(enabled[0].isEnabled()).toBe(true);
@@ -73,7 +73,7 @@ describe("Game", function() {
         expect(enabled[2].isEnabled()).toBe(true);
         expect(enabled[3].isEnabled()).toBe(true);
 
-        game.disabledAllCheckers();
+        game.checkBoard.disabledAllCheckers();
 
         expect(enabled[0].isEnabled()).toBe(false);
         expect(enabled[1].isEnabled()).toBe(false);
@@ -105,15 +105,15 @@ describe("Game", function() {
         game.play();
 
         var checker1 = game.checkBoard.getCheckerByPlayerAndId(1, 9);
-        checker1.realObj.click();
+        checker1.clickHandler();
         expect(checker1.isSelected()).toBe(true);
-        expect(checker1).toEqual(game.checkBoard.selectedChecker);
+        expect(checker1).toEqual(game.checkBoard.getSelectedChecker());
 
         var checker2 = game.checkBoard.getCheckerByPlayerAndId(1, 10);
-        checker2.realObj.click();
+        checker2.clickHandler();
         expect(checker1.isSelected()).toBe(false);
         expect(checker2.isSelected()).toBe(true);
-        expect(checker2).toEqual(game.checkBoard.selectedChecker);
+        expect(checker2).toEqual(game.checkBoard.getSelectedChecker());
     });
 
     it("Переключить раунд на 2", function() {
@@ -123,14 +123,14 @@ describe("Game", function() {
         checker1.clickHandler();
 
         // Сначала игрок 1
-        expect(game.getCurrentPlayer()).toEqual(1);
+        expect(game.getCurrentPlayer().getId()).toEqual(1);
 
         // Перешли на второй раунд
         var cell1 = checker1.getNearCells()[0].cell;
         cell1.clickHandler();
 
         // После переключения игрок 2
-        expect(game.getCurrentPlayer()).toEqual(2);
+        expect(game.getCurrentPlayer().getId()).toEqual(2);
 
         // Не должно быть активных ячеек
         var activeCells = game.checkBoard.cells.filter( function(item){ return item.isEnabled(); });
@@ -142,7 +142,7 @@ describe("Game", function() {
         expect(enableCheckers[0].player).toEqual(2);
 
         // Не должно быть выбранной шашки
-        expect(game.checkBoard.selectedChecker).toEqual(null);
+        expect(game.checkBoard.getSelectedChecker()).toEqual(undefined);
     });
 
     it("Если на клетке присутствует шашка, то поле не должно активироваться", function() {
@@ -167,14 +167,15 @@ describe("Game", function() {
     });
 
     it("Получить все дамки которыми можно сходить", function(){
-        game.currentPlayer = 1;
-        game.checkBoard.defaultSetPlayer1();
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         var cell_8f = game.checkBoard.getCellById('8f');
         cell_8f.setChecker(checker);
 
-        var queens = game.getCheckersQueenWithFreeCellsNear();
+        var queens = game.getCurrentPlayer().getCheckersQueenWithFreeCellsNear();
         expect(queens.length).toEqual(1);
         expect(queens[0].player).toEqual(1);
         expect(queens[0].id).toEqual(9);
@@ -192,7 +193,7 @@ describe("Game", function() {
 
         }
 
-        expect(game.hasPlayerLiveCheckers(1)).toBe(true);
+        expect(game.getPlayer1().hasAliveCheckers()).toBe(true);
     });
 
     it("В начале игры ходит игрок должно быть 24 картинки шашек", function() {
@@ -207,6 +208,19 @@ describe("Game", function() {
         var checkers = $('.cell img');
 
         expect(checkers.length).toEqual(24);
+    });
+
+    it("После начала второй игры у игрока должно быть 12 шашек", function(){
+        game.play();
+
+        var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        var cell_4b = game.checkBoard.getCellById('4b');
+        cell_4b.setChecker(checker);
+
+        game.play();
+
+        expect(game.getPlayer1().getCheckers().length).toEqual(12);
+        expect(game.getPlayer2().getCheckers().length).toEqual(12);
     });
 
     it("После начала второй игры не должно быть клеток с шашками кроме дефолтных", function(){
@@ -226,7 +240,7 @@ describe("Game", function() {
     });
 
     it("После начала второй игры не должно быть клеток убийц", function(){
-        game.currentPlayer = 1;
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
@@ -255,7 +269,7 @@ describe("Game", function() {
     });
 
     it("После начала второй игры не должно быть активных клеток", function(){
-        game.currentPlayer = 1;
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
@@ -281,7 +295,7 @@ describe("Game", function() {
     });
 
     it("После начала второй игры не должно быть выбранны шашек", function(){
-        game.currentPlayer = 1;
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');

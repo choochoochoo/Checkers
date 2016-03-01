@@ -1,174 +1,139 @@
 // Класс ИГРА
 var Game = function(){
     // Номер раунда
-    this.round = 0;
+    this._round = 0;
 
     // Текущий игрок
-    this.currentPlayer = null;
+    this._currentPlayer = null;
 
     // Табло
     this.tableBoard = new TableBoard();
     this.checkBoard = new CheckBoard();
     this.checkBoard.game = this;
 
+    // Игроки
+    this.players = [];
+
+    // Места становления дамок игрока 1
+    var queenPlaces1 = [ '8b', '8d', '8f', '8h' ];
+
+    // Позиции шашек игрока 1 по умолчанию
+    var defaultPlaces1 = [
+        '1a', '1c', '1e', '1g',
+        '2b', '2d', '2f', '2h',
+        '3a', '3c', '3e', '3g'
+    ];
+
+    // Места становления дамок игрока 2
+    var queenPlaces2 = [ '1a', '1c', '1e', '1g' ];
+
+    // Позиции шашек игрока 2 по умолчанию
+    var defaultPlaces2 = [
+        '6b', '6d', '6f', '6h',
+        '7a', '7c', '7e', '7g',
+        '8b', '8d', '8f', '8h'
+    ];
+
+    this.players.push(new Player(1, 'Белый', this, defaultPlaces1, queenPlaces1));
+    this.players.push(new Player(2, 'Черный', this, defaultPlaces2, queenPlaces2));
+
     // Привязка к событию
-    this.tableBoard.getStartButton().click(function(){
-        this.play();
-    }.bind(this));
+    this.tableBoard.getStartButton().click(function(){ this.play(); }.bind(this));
+};
 
-    // Получить раунд
-    this.getRound = function(){
-        return this.round;
-    };
+// Получить раунд
+Game.prototype.getRound = function(){
+    return this._round;
+};
 
-    // Изменить раунд
-    this.changeRound = function(){
-        this.round++;
-    };
+// Получить текущего игрока
+Game.prototype.getCurrentPlayer = function(){
+    return this._currentPlayer;
+};
 
-    //Получить текущего игрока
-    this.getCurrentPlayer = function(){
-        return this.currentPlayer;
-    };
+// Установить текущего игрока
+Game.prototype.setCurrentPlayer = function(player){
+    this._currentPlayer = player;
+};
 
-    // Изменить игрока
-    this.changePlayer = function(){
-        if(this.getCurrentPlayer() === 1){
-            this.currentPlayer = 2;
-        }else{
-            this.currentPlayer = 1;
-        }
-    };
+// Получить игрока 1
+Game.prototype.getPlayer1 = function(){
+    return this.players[0];
+};
 
-    // Начать игру
-    this.play = function () {
-        // Обнулить состояния всеш клеток
-        this.checkBoard.cells.forEach(function(item){ item.default(); });
+// Получить игрока 2
+Game.prototype.getPlayer2 = function(){
+    return this.players[1];
+};
 
-        // Обнулит состояние всех шашек
-        this.checkBoard.checkers = [];
-        // стереть старые картинки шашек
-        $('.cell img').remove();
+// Изменить игрока
+Game.prototype.changePlayer = function(){
+    if(this.getCurrentPlayer().getId() === this.getPlayer1().getId()){
+        this.setCurrentPlayer(this.getPlayer2());
+    }else{
+        this.setCurrentPlayer(this.getPlayer1());
+    }
+};
 
-        this.checkBoard.defaultSet();
-        this.round = 1;
-        this.currentPlayer = 1;
-        this.tableBoard.writeOnTableBoardPlayer(this.getCurrentPlayer());
-        this.tableBoard.writeOnTableBoardRound(this.getRound());
-        this.enableCheckers(this.findPossible());
-    };
+// Начать игру
+Game.prototype.play = function () {
 
-    // Получить шашки которыми можно сходить
-    this.findPossible = function(){
-        var enabled = [];
-        var checkersWithEnemies = this.getCheckersWithEnemiesNear();
-        // Добавим дамки
-        checkersWithEnemies = checkersWithEnemies.concat(this.getCheckersQueenWithEnemiesNear());
+    // Обнулить все шашки игроков
+    this.getPlayer1().clearCheckers();
+    this.getPlayer2().clearCheckers();
 
-        // Есть ли есть рядом враги со свободным полем для удара
-        if(checkersWithEnemies.length > 0){
-            enabled = checkersWithEnemies;
-        }else{
-            enabled = this.getCheckersWithFreeCellsNear();
-            enabled = enabled.concat(this.getCheckersQueenWithFreeCellsNear());
-        }
+    // Дефолтное состояние доски
+    this.checkBoard.default();
 
-        return enabled;
-    };
+    // Сначала раунд 1
+    this._round = 1;
 
-    // Получить все шашки у которых есть рядом свободная клетка
-    this.getCheckersWithFreeCellsNear = function(){
-        return this.getCheckersCurrentPlayer().filter(function(item){
-            return item.getFreeCellNear().length > 0;
-        });
-    };
+    // Поставить игрока 1 по умолчанию
+    this.setCurrentPlayer(this.getPlayer1());
 
-    // Получит все шашки у которых рядом враг
-    this.getCheckersWithEnemiesNear = function(){
-        return this.getCheckersCurrentPlayer().filter(function(item){
-            return item.getEnemiesNear().length > 0;
-        });
-    };
+    // Активировать шашки
+    this.checkBoard.enableCheckers(this.getCurrentPlayer().findActiveCheckers());
 
-    // Получить все дамки у которых есть рядом свободная клетка
-    this.getCheckersQueenWithFreeCellsNear = function(){
-        return this.getCheckersCurrentPlayer().filter(function(item){
-            return item.isQueen() && item.getFreeCellNearForQueen().length > 0;
-        });
-    };
+    // Написать на табло
+    this.tableBoard.writeOnTableBoardPlayer(this.getCurrentPlayer().getName());
+    this.tableBoard.writeOnTableBoardRound(this.getRound());
+};
 
-    // Получить все дамки у которых есть враг
-    this.getCheckersQueenWithEnemiesNear = function(){
-        return this.getCheckersCurrentPlayer().filter(function(item){
-            return item.isQueen() && item.getEnemiesNearForQueen().length > 0;
-        });
-    };
+// Переключить раунд
+Game.prototype.nextRound = function(){
+    // Изменить текущего игрока
+    this.changePlayer();
 
-    // Активировать шашки для хода
-    this.enableCheckers = function(checkers){
-        for(var i = 0; i < checkers.length; i++){
-            checkers[i].enable();
-        }
-    };
+    // Деактивировать все клетки
+    this.checkBoard.disableAllCells();
 
-    // Убрать шашки которыми можно сходить
-    this.disabledAllCheckers = function(){
-        for(var i = 0; i < this.checkBoard.checkers.length; i++){
-            this.checkBoard.checkers[i].disable();
-        }
-    };
+    // Деактивировать все шашки
+    this.checkBoard.disabledAllCheckers();
 
-    // Получить шашки текущего игрока
-    this.getCheckersCurrentPlayer = function(){
-        return this.checkBoard.checkers.filter(function(item){
-            return item.player === this.currentPlayer && !item.isKilled();
-        }.bind(this) );
-    };
+    // Снять выбор с шашки
+    this.checkBoard.getSelectedChecker().deselect();
 
-    // Получить активные шашки
-    this.getEnableCheckers = function(){
-        return this.checkBoard.checkers.filter(function(item){
-            return item.isEnabled();
-        });
-    };
+    // Посмотреть есть ли у игрока 1 еще шашки
+    if(this.getPlayer1().hasAliveCheckers()){
+        this.tableBoard.writeOnTableBoardWinner(this.getPlayer2().getName());
+        alert('Победил игрок: ' + this.getPlayer2().getName());
+        return;
+    }
 
-    // Переключить раунд
-    this.nextRound = function(){
-        this.checkBoard.disableAllCells();
-        this.changePlayer();
-        this.disabledAllCheckers();
+    // Посмотреть есть ли у игрока 2 еще шашки
+    if(this.getPlayer2().hasAliveCheckers()){
+        this.tableBoard.writeOnTableBoardWinner(this.getPlayer1().getName());
+        alert('Победил игрок: ' + this.getPlayer1().getName());
+        return;
+    }
 
-        if(this.hasPlayerLiveCheckers(1)){
-            this.tableBoard.writeOnTableBoardWinner(2);
-            alert('Победил игрок: ' + 2);
-            return;
-        }
+    // Активировать шашки
+    this.checkBoard.enableCheckers(this.getCurrentPlayer().findActiveCheckers());
 
-        if(this.hasPlayerLiveCheckers(2)){
-            this.tableBoard.writeOnTableBoardWinner(1);
-            alert('Победил игрок: ' + 1);
-            return;
-        }
+    // Изменить номер раунда
+    this._round++;
 
-        this.enableCheckers(this.findPossible());
-        this.changeRound();
-
-        this.tableBoard.writeOnTableBoardPlayer(this.currentPlayer);
-        this.tableBoard.writeOnTableBoardRound(this.round);
-
-        this.checkBoard.selectedChecker.deselect();
-    };
-
-    // Проверить есть ли у игрока живые шашки
-    this.hasPlayerLiveCheckers = function(player){
-        var aliveCheckers = this.checkBoard.checkers.filter(function(item) {
-            return !item.isKilled() && item.player === player;
-        });
-
-        if(aliveCheckers.length === 0){
-            return true;
-        }
-
-        return false;
-    };
+    // Написать на табло
+    this.tableBoard.writeOnTableBoardPlayer(this.getCurrentPlayer().getName());
+    this.tableBoard.writeOnTableBoardRound(this.getRound());
 };

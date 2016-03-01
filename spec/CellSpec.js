@@ -19,11 +19,11 @@ describe("CheckCell", function() {
 
         // старая клетка
         expect(prevCell.hasChecker()).toBe(false);
-        expect(prevCell.checker).toBe(null);
+        expect(prevCell._checker).toBe(null);
 
         // новая
         expect(cell1.hasChecker()).toBe(true);
-        expect(cell1.checker.cell.id).toBe('4b');
+        expect(cell1._checker.cell.id).toBe('4b');
     });
 
     it("Получить клетку по диагонали вверх и влево", function() {
@@ -98,9 +98,14 @@ describe("CheckCell", function() {
     });
 
     it("После удара нужно стереть во всех полях свойство для убийства", function(){
-        game.currentPlayer = 1;
+
+        var player1 = game.getPlayer1();
+        var player2 = game.getPlayer2();
+
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
+        player1.addChecker(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
         checker.makeQueen();
@@ -110,9 +115,11 @@ describe("CheckCell", function() {
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
+        player2.addChecker(checker2);
 
         var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
+        player2.addChecker(checker3);
 
         checker.clickHandler();
 

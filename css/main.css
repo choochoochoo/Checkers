@@ -32,12 +32,17 @@
 
 #checkersboard{
     width: 800px;
-    height: 600px;
+    height: 700px;
+   /* border: 2px dashed red;*/
+    float: left;
+
 }
 
 #tableboard{
     width: 200px;
-    height: 100px;
+    height: 700px;
+   /* border: 2px dashed red;*/
+    float: right;
 }
 
 .black{
@@ -46,4 +51,10 @@
 
 .white{
     background-color: ivory;
+}
+
+.wrapper{
+    margin: auto;
+    width: 1010px;
+  /*  border: 1px dashed red;*/
 }

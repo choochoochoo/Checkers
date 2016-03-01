@@ -2,12 +2,13 @@ describe("Checker spec", function() {
     var game;
 
     beforeEach(function() {
-        game = new Game();;
+        game = new Game();
     });
 
     it('Активировать шашку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.enable();
         expect(checker.isEnabled()).toBe(true);
@@ -15,8 +16,9 @@ describe("Checker spec", function() {
     });
 
     it('Активировать шашку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.enable();
         expect(checker.isEnabled()).toBe(true);
@@ -24,8 +26,9 @@ describe("Checker spec", function() {
     });
 
     it('Активировать дамку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
         checker.enable();
@@ -34,8 +37,9 @@ describe("Checker spec", function() {
     });
 
     it('Активировать дамку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.makeQueen();
         checker.enable();
@@ -44,8 +48,9 @@ describe("Checker spec", function() {
     });
 
     it('Деактивировать шашку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.enable();
         expect(checker.isEnabled()).toBe(true);
@@ -55,8 +60,9 @@ describe("Checker spec", function() {
     });
 
     it('Деактивировать шашку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.enable();
         expect(checker.isEnabled()).toBe(true);
@@ -66,8 +72,9 @@ describe("Checker spec", function() {
     });
 
     it('Деактивировать дамку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
         checker.enable();
@@ -78,8 +85,9 @@ describe("Checker spec", function() {
     });
 
     it('Деактивировать дамку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.makeQueen();
         checker.enable();
@@ -90,8 +98,9 @@ describe("Checker spec", function() {
     });
 
     it('Выбрать шашку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -99,8 +108,9 @@ describe("Checker spec", function() {
     });
 
     it('Выбрать шашку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -108,8 +118,9 @@ describe("Checker spec", function() {
     });
 
     it('Выбрать дамку для игрока 1', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
         checker.select();
@@ -118,8 +129,9 @@ describe("Checker spec", function() {
     });
 
     it('Выбрать дамку для игрока 2', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.makeQueen();
         checker.select();
@@ -128,8 +140,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с шашки для игрока 1 при активной шашки', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -139,8 +152,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с шашки для игрока 1 при неактивной шашки', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -150,8 +164,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с шашки для игрока 2 при активной шашки', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -161,8 +176,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с шашки для игрока 2 при неактивной шашки', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.select();
         expect(checker.isSelected()).toBe(true);
@@ -172,8 +188,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с дамки для игрока 1 при активной дамки', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
         checker.select();
@@ -184,8 +201,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с дамки для игрока 1 при неактивной дамки', function(){
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
         checker.select();
@@ -196,8 +214,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с дамки для игрока 2 при активной дамки', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 1;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.makeQueen();
         checker.select();
@@ -208,8 +227,9 @@ describe("Checker spec", function() {
     });
 
     it('Снять выбор с дамки для игрока 2 при не активной дамки', function(){
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 1;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         checker.makeQueen();
         checker.select();
@@ -238,7 +258,7 @@ describe("Checker spec", function() {
         expect(nearCells[0].cell.id).toEqual('2b');
         expect(nearCells.length).toEqual(1);
 
-        game.checkBoard.selectedChecker = checker;
+        checker.select();
 
         game.nextRound();
 
@@ -293,8 +313,9 @@ describe("Checker spec", function() {
     });
 
     it("Сделать шашку дамкой игрока 1", function() {
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         var cell_8b = game.checkBoard.getCellById('8b');
@@ -314,8 +335,9 @@ describe("Checker spec", function() {
     });
 
     it("Сделать шашку дамкой игрока 2", function() {
-        game.checkBoard.defaultSetPlayer2();
-        game.currentPlayer = 2;
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player2);
+        player2.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
         var cell_1a = game.checkBoard.getCellById('1a');
@@ -335,8 +357,9 @@ describe("Checker spec", function() {
     });
 
     it("Получить все ближайшие клетки для дамки", function() {
-        game.checkBoard.defaultSetPlayer1();
-        game.currentPlayer = 1;
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
@@ -372,8 +395,9 @@ describe("Checker spec", function() {
     });
 
     it("Получить все свободные клетки для дамки", function() {
-        game.currentPlayer = 1;
-        game.checkBoard.defaultSetPlayer1();
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         checker.makeQueen();
@@ -409,8 +433,9 @@ describe("Checker spec", function() {
     });
 
     it("При нажатии на дамку должны активироваться поля", function() {
-        game.currentPlayer = 1;
-        game.checkBoard.defaultSetPlayer1();
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var enableCells = game.checkBoard.getEnableCells();
         expect(enableCells.length).toEqual(0);
@@ -436,8 +461,9 @@ describe("Checker spec", function() {
     });
 
     it("Дамка не может прыгать через свою", function() {
-        game.currentPlayer = 1;
-        game.checkBoard.defaultSetPlayer1();
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         var checker2 = game.checkBoard.getCheckerByPlayerAndId(1, 10);
@@ -463,11 +489,16 @@ describe("Checker spec", function() {
     });
 
     it("Дамка обязана бить ", function() {
-        game.currentPlayer = 1;
+
+        var player1 = game.getPlayer1();
+        var player2 = game.getPlayer2();
+
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
+        player1.addChecker(checker);
         checker.makeQueen();
         checker.enable();
 
@@ -475,20 +506,22 @@ describe("Checker spec", function() {
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
+        player2.addChecker(checker2);
 
         var checker3 = new Checker(1, 1, game.checkBoard.getCellById('3g'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
         var cell_3g = game.checkBoard.getCellById('3g');
         cell_3g.setChecker(checker3);
+        player1.addChecker(checker3);
 
-        var enableCheckers = game.findPossible();
+        var enableCheckers = game.getCurrentPlayer().findActiveCheckers();
 
         expect(enableCheckers.length).toEqual(1);
         expect(enableCheckers[0].id).toEqual(0);
     });
 
     it("Дамка обязана бить и может прыгнуть на любое после после удара", function() {
-        game.currentPlayer = 1;
+        game.setCurrentPlayer(game.getPlayer1());
         var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');

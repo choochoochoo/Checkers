@@ -59,7 +59,7 @@ describe("Game algorithm for attack", function() {
         cell3.clickHandler();
 
        // checker2.clickHandler();
-        var enableCheckers = game.getEnableCheckers();
+        var enableCheckers = game.checkBoard.getEnableCheckers();
         expect(enableCheckers.length).toEqual(1);
         expect(enableCheckers[0].id).toEqual(2);
         expect(enableCheckers[0].player).toEqual(2);
@@ -156,7 +156,7 @@ describe("Game algorithm for attack", function() {
         cell7.clickHandler();
 
         // Должны быть две шашки и вторая должна мочь ударить назад
-        var enableCheckers = game.getEnableCheckers();
+        var enableCheckers = game.checkBoard.getEnableCheckers();
         expect(enableCheckers.length).toEqual(2);
         expect(enableCheckers[0].id).toEqual(0);
         expect(enableCheckers[1].id).toEqual(1);
@@ -192,22 +192,23 @@ describe("Game algorithm for attack", function() {
         // Поставить на 3e и убить шашку на 4d
         cell_3e.clickHandler();
 
-        expect(game.getCurrentPlayer()).toEqual(2);
+        expect(game.getCurrentPlayer().getId()).toEqual(2);
         expect(game.checkBoard.getEnableCells().length).toEqual(1);
         var cell_5g = game.checkBoard.getCellById('5g');
         expect(cell_5g.isEnabled()).toBe(true);
     });
 
     it("У дамки должна быть возможность хода", function(){
-        game.currentPlayer = 1;
-        game.checkBoard.defaultSetPlayer1();
+        var player1 = game.getPlayer1();
+        game.setCurrentPlayer(player1);
+        player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         var cell_8f = game.checkBoard.getCellById('8f');
         cell_8f.setChecker(checker);
 
-        var activeCheckers = game.findPossible();
-        game.enableCheckers(activeCheckers);
+        var activeCheckers = game.getCurrentPlayer().findActiveCheckers();
+        game.checkBoard.enableCheckers(activeCheckers);
         expect(activeCheckers.length).toBe(6);
         expect(checker.isEnabled()).toBe(true);
     });
