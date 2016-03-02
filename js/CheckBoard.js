@@ -41,9 +41,9 @@ CheckBoard.prototype.disabledAllCheckers = function(){
 };
 
 // Получить шашку по участнику и id
-CheckBoard.prototype.getCheckerByPlayerAndId = function(player, id){
+CheckBoard.prototype.getCheckerByPlayerAndId = function(playerId, id){
     return this.checkers.filter(function(item){
-        return item.player === player &&  item.id === id;
+        return item.player.getId() === playerId &&  item.id === id;
     })[0];
 };
 
@@ -57,6 +57,11 @@ CheckBoard.prototype.getEnableCells = function(){
     return this.cells.filter( function(item){ return item.isEnabled(); });
 };
 
+// Активировать клетки
+CheckBoard.prototype.enableCells = function(cells){
+    cells.forEach(function(item){ item.cell.enable(); });
+};
+
 // Деактивировать все активные клетки
 CheckBoard.prototype.disableAllCells = function(){
     this.cells.forEach(function(item){ item.disable(); });
@@ -65,6 +70,11 @@ CheckBoard.prototype.disableAllCells = function(){
 // Получить все клетки которые являются убийцами
 CheckBoard.prototype.getAllKillCells = function(){
     return this.cells.filter(function(item){ return item.isKiller(); });
+};
+
+// Сделать все клетки не убийцами
+CheckBoard.prototype.clearAllKillCells = function(){
+    this.getAllKillCells().forEach(function(item){ item.setKilledChecker(null); });
 };
 
 // Дефолтное состояние доски

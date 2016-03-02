@@ -25,43 +25,46 @@ var CheckCell = function(id, checkBoard){
 CheckCell.prototype.clickHandler = function(){
     if(this.isEnabled()){
 
-        console.log('checker: ' + this.checkBoard.getSelectedChecker().id
-            + ', player: ' + this.checkBoard.getSelectedChecker().player
-            + ', old cell: ' + this.checkBoard.getSelectedChecker().cell.id
-            + ', new cell: ' + this.id);
+        var selectedChecker = this.checkBoard.getSelectedChecker();
 
-        this.setChecker(this.checkBoard.getSelectedChecker());
+        // Записать активность
+        this.traceActivity();
 
-        // Убить шашку
+        // Поставить выбранную шашку на клетку
+        this.setChecker(selectedChecker);
+
+        // Попытаться сделать дамкой
+        this.tryToMakeQueen();
+
+        // Если поле является убийцей
         if(this.isKiller()){
 
-            console.log('killed checker: ' + this.getKilledChecker().id
-                + ', player: ' + this.getKilledChecker().player);
-
+            // Убить шашку которую поле убивает
             this.getKilledChecker().kill();
 
             // после убийства клетки нужно стереть все упоминания в полях
-            var killCells = this.checkBoard.getAllKillCells();
-            for(var i = 0; i < killCells.length; i++){
-                killCells[i]._killedChecker = null;
-            }
+            this.checkBoard.clearAllKillCells();
 
-            // Здесь нужно узнать можно ли еще кого то убить этой шашкой
-            var enemiesNear = this.checkBoard.getSelectedChecker().getEnemiesNear();
-            // Если есть нужно не переключать игрока
-            if(enemiesNear.length > 0){
+            // Если есть враги нужно не переключать раунд
+            if(selectedChecker.isEnemiesNear()){
+                // Деактивируем все клетки
                 this.checkBoard.disableAllCells();
-                this.checkBoard.getSelectedChecker().clickHandler();
+
+                // Нажмем на шашку
+                selectedChecker.clickHandler();
+
                 return;
             }
         }
 
+        // Переключить раунд
         this.checkBoard.game.nextRound();
     }
 };
 
 // Поставить шашку на клетку
 CheckCell.prototype.setChecker = function(ch){
+    // Здесь вставляему шашку в дом
     $('#' + this.id).html(ch.getRealObj());
 
     // у старой клетки сотрем присутствие шашки
@@ -69,11 +72,9 @@ CheckCell.prototype.setChecker = function(ch){
 
     // Добавим шашку в новую
     this._checker = ch;
-    ch.cell = this;
 
-    if(this.checkBoard.game.getCurrentPlayer().isQueenPlace(this.id)){
-        ch.makeQueen();
-    }
+    // Шашке запишем клетку
+    ch.cell = this;
 };
 
 // Получить шашку
@@ -132,6 +133,26 @@ CheckCell.prototype.disable = function(){
         this.getRealObj().css({backgroundColor: 'silver'});
     }else{
         this.getRealObj().css({backgroundColor: 'ivory'});
+    }
+};
+
+// Попытаться сделать дамкой
+CheckCell.prototype.tryToMakeQueen = function(){
+    if(this.checkBoard.game.getCurrentPlayer().isQueenPlace(this.id)){
+        this.checkBoard.getSelectedChecker().makeQueen();
+    }
+};
+
+// Записать активность
+CheckCell.prototype.traceActivity = function(){
+    console.log('checker: ' + this.checkBoard.getSelectedChecker().id
+        + ', player: ' + this.checkBoard.getSelectedChecker().player
+        + ', old cell: ' + this.checkBoard.getSelectedChecker().cell.id
+        + ', new cell: ' + this.id);
+
+    if(this.isKiller()){
+        console.log('killed checker: ' + this.getKilledChecker().id
+            + ', player: ' + this.getKilledChecker().player);
     }
 };
 

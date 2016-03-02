@@ -321,15 +321,20 @@ describe("Checker spec", function() {
         var cell_8b = game.checkBoard.getCellById('8b');
 
         expect(checker.isQueen()).toBe(false);
+        checker.select();
         cell_8b.setChecker(checker);
+        cell_8b.tryToMakeQueen();
+
         expect(checker.isQueen()).toBe(true);
         expect(checker.realObj.attr('src')).toEqual('img/white-checker-queen.png');
 
         var checker2 = game.checkBoard.getCheckerByPlayerAndId(1, 8);
+        checker2.select();
         var cell_8d = game.checkBoard.getCellById('8d');
 
         expect(checker2.isQueen()).toBe(false);
         cell_8d.setChecker(checker2);
+        cell_8d.tryToMakeQueen();
         expect(checker2.isQueen()).toBe(true);
         expect(checker2.realObj.attr('src')).toEqual('img/white-checker-queen.png');
     });
@@ -340,18 +345,22 @@ describe("Checker spec", function() {
         player2.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(2, 0);
+        checker.select();
         var cell_1a = game.checkBoard.getCellById('1a');
 
         expect(checker.isQueen()).toBe(false);
         cell_1a.setChecker(checker);
+        cell_1a.tryToMakeQueen();
         expect(checker.isQueen()).toBe(true);
         expect(checker.realObj.attr('src')).toEqual('img/black-checker-queen.png');
 
         var checker2 = game.checkBoard.getCheckerByPlayerAndId(2, 1);
+        checker2.select();
         var cell_1c = game.checkBoard.getCellById('1c');
 
         expect(checker2.isQueen()).toBe(false);
         cell_1c.setChecker(checker2);
+        cell_1c.tryToMakeQueen();
         expect(checker2.isQueen()).toBe(true);
         expect(checker2.realObj.attr('src')).toEqual('img/black-checker-queen.png');
     });
@@ -494,7 +503,7 @@ describe("Checker spec", function() {
         var player2 = game.getPlayer2();
 
         game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        var checker = new Checker(player1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
@@ -502,13 +511,13 @@ describe("Checker spec", function() {
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(player2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
         player2.addChecker(checker2);
 
-        var checker3 = new Checker(1, 1, game.checkBoard.getCellById('3g'), game.checkBoard);
+        var checker3 = new Checker(player1, 1, game.checkBoard.getCellById('3g'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
         var cell_3g = game.checkBoard.getCellById('3g');
         cell_3g.setChecker(checker3);
@@ -521,15 +530,19 @@ describe("Checker spec", function() {
     });
 
     it("Дамка обязана бить и может прыгнуть на любое после после удара", function() {
-        game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+
+        var player1 = game.getPlayer1();
+        var player2 = game.getPlayer2();
+
+        game.setCurrentPlayer(player1);
+        var checker = new Checker(player1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(player2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);

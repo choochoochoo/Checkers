@@ -62,7 +62,7 @@ describe("Game algorithm for attack", function() {
         var enableCheckers = game.checkBoard.getEnableCheckers();
         expect(enableCheckers.length).toEqual(1);
         expect(enableCheckers[0].id).toEqual(2);
-        expect(enableCheckers[0].player).toEqual(2);
+        expect(enableCheckers[0].player.getId()).toEqual(2);
 
     });
 
@@ -204,6 +204,7 @@ describe("Game algorithm for attack", function() {
         player1.defaultSet();
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
+        checker.makeQueen();
         var cell_8f = game.checkBoard.getCellById('8f');
         cell_8f.setChecker(checker);
 
@@ -211,5 +212,42 @@ describe("Game algorithm for attack", function() {
         game.checkBoard.enableCheckers(activeCheckers);
         expect(activeCheckers.length).toBe(6);
         expect(checker.isEnabled()).toBe(true);
+    });
+
+    it("Дамка может бить второй раз врагов которые так же находятся далеко от нее", function(){
+        var player1 = game.getPlayer1();
+        var player2 = game.getPlayer2();
+        game.setCurrentPlayer(player1);
+
+        var checker1 = new Checker(player1, 0, game.checkBoard.getCellById('8b'), game.checkBoard);
+        checker1.makeQueen();
+        checker1.enable();
+        checker1.select();
+        var cell_8b = game.checkBoard.getCellById('8b');
+        cell_8b.setChecker(checker1);
+
+        player1.addChecker(checker1);
+        game.checkBoard.checkers.push(checker1);
+
+        var checker2 =  new Checker(player2, 0, game.checkBoard.getCellById('6d'), game.checkBoard);
+        var cell_6d = game.checkBoard.getCellById('6d');
+        cell_6d.setChecker(checker2);
+
+        var checker3 =  new Checker(player2, 1, game.checkBoard.getCellById('2b'), game.checkBoard);
+        var cell_2b = game.checkBoard.getCellById('2b');
+        cell_2b.setChecker(checker3);
+
+        player2.addChecker(checker2);
+        game.checkBoard.checkers.push(checker2);
+        player2.addChecker(checker3);
+        game.checkBoard.checkers.push(checker3);
+
+        checker1.clickHandler();
+
+        var cell_5e = game.checkBoard.getCellById('5e');
+        cell_5e.clickHandler();
+
+        expect(game.getCurrentPlayer().getId()).toBe(1);
+        expect(checker1.isEnabled()).toBe(true);
     });
 });

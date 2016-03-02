@@ -139,7 +139,7 @@ describe("Game", function() {
         // Должны быть активированы 4 шашки 2 игрока
         var enableCheckers = game.checkBoard.checkers.filter( function(item){ return item.isEnabled(); });
         expect(enableCheckers.length).toEqual(4);
-        expect(enableCheckers[0].player).toEqual(2);
+        expect(enableCheckers[0].player.getId()).toEqual(2);
 
         // Не должно быть выбранной шашки
         expect(game.checkBoard.getSelectedChecker()).toEqual(undefined);
@@ -173,11 +173,12 @@ describe("Game", function() {
 
         var checker = game.checkBoard.getCheckerByPlayerAndId(1, 9);
         var cell_8f = game.checkBoard.getCellById('8f');
+        checker.makeQueen();
         cell_8f.setChecker(checker);
 
         var queens = game.getCurrentPlayer().getCheckersQueenWithFreeCellsNear();
         expect(queens.length).toEqual(1);
-        expect(queens[0].player).toEqual(1);
+        expect(queens[0].player.getId()).toEqual(1);
         expect(queens[0].id).toEqual(9);
     });
 
@@ -187,7 +188,7 @@ describe("Game", function() {
 
         for(var i = 0; i < game.checkBoard.checkers.length; i++){
             checker = game.checkBoard.checkers[i];
-            if(checker.player === 1){
+            if(checker.player.getId() === 1){
                 checker.kill();
             }
 
@@ -241,19 +242,19 @@ describe("Game", function() {
 
     it("После начала второй игры не должно быть клеток убийц", function(){
         game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        var checker = new Checker(game.getPlayer1(), 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(game.getPlayer2(), 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
 
-        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        var checker3 = new Checker(game.getPlayer2(), 1, game.checkBoard.getCellById('8b'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
 
         checker.clickHandler();
@@ -270,19 +271,19 @@ describe("Game", function() {
 
     it("После начала второй игры не должно быть активных клеток", function(){
         game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        var checker = new Checker(game.getPlayer1(), 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(game.getPlayer2(), 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
 
-        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        var checker3 = new Checker(game.getPlayer2(), 1, game.checkBoard.getCellById('8b'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
 
         checker.clickHandler();
@@ -296,19 +297,19 @@ describe("Game", function() {
 
     it("После начала второй игры не должно быть выбранны шашек", function(){
         game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        var checker = new Checker(game.getPlayer1(), 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
         cell_7e.setChecker(checker);
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(game.getPlayer2(), 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
 
-        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        var checker3 = new Checker(game.getPlayer2(), 1, game.checkBoard.getCellById('8b'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
 
         checker.clickHandler();

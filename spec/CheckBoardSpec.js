@@ -6,8 +6,9 @@ describe("Check board", function() {
     });
 
     it("Получить шашку по игроку и id", function() {
-        var checker1 = new Checker(1, 12);
-        var checker2 = new Checker(2, 10);
+
+        var checker1 = new Checker(game.getPlayer1(), 12);
+        var checker2 = new Checker(game.getPlayer2(), 10);
         game.checkBoard.checkers.push(checker1);
         game.checkBoard.checkers.push(checker2);
         expect(game.checkBoard.getCheckerByPlayerAndId(1, 8)).not.toEqual(checker1);

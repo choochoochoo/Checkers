@@ -1,4 +1,4 @@
-describe("CheckCell", function() {
+describe("Cell", function() {
     var game;
 
     beforeEach(function() {
@@ -102,8 +102,8 @@ describe("CheckCell", function() {
         var player1 = game.getPlayer1();
         var player2 = game.getPlayer2();
 
-        game.setCurrentPlayer(game.getPlayer1());
-        var checker = new Checker(1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
+        game.setCurrentPlayer(player1);
+        var checker = new Checker(player1, 0, game.checkBoard.getCellById('7e'), game.checkBoard);
         game.checkBoard.checkers.push(checker);
         player1.addChecker(checker);
         var cell_7e = game.checkBoard.getCellById('7e');
@@ -111,13 +111,13 @@ describe("CheckCell", function() {
         checker.makeQueen();
         checker.enable();
 
-        var checker2 = new Checker(2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
+        var checker2 = new Checker(player2, 0, game.checkBoard.getCellById('5c'), game.checkBoard);
         game.checkBoard.checkers.push(checker2);
         var cell_5c = game.checkBoard.getCellById('5c');
         cell_5c.setChecker(checker2);
         player2.addChecker(checker2);
 
-        var checker3 = new Checker(2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
+        var checker3 = new Checker(player2, 1, game.checkBoard.getCellById('8b'), game.checkBoard);
         game.checkBoard.checkers.push(checker3);
         player2.addChecker(checker3);
 

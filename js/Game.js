@@ -24,6 +24,19 @@ var Game = function(){
         '3a', '3c', '3e', '3g'
     ];
 
+    // Пакет изображений для игрока 1
+    var imgPack1 = {
+        checkerImg: 'img/white-checker.png',
+        checkerQueenImg: 'img/white-checker-queen.png',
+        enabledCheckerImg: 'img/white-checker-enabled.png',
+        enabledCheckerQueenImg: 'img/white-checker-queen-enabled.png',
+        selectedCheckerImg: 'img/white-checker-selected.png',
+        selectedCheckerQueenImg: 'img/white-checker-queen-selected.png'
+    };
+
+    this.players.push(new Player(1, 'Белый', this,
+        defaultPlaces1, queenPlaces1, imgPack1));
+
     // Места становления дамок игрока 2
     var queenPlaces2 = [ '1a', '1c', '1e', '1g' ];
 
@@ -34,8 +47,18 @@ var Game = function(){
         '8b', '8d', '8f', '8h'
     ];
 
-    this.players.push(new Player(1, 'Белый', this, defaultPlaces1, queenPlaces1));
-    this.players.push(new Player(2, 'Черный', this, defaultPlaces2, queenPlaces2));
+    // Пакет изображений для игрока 2
+    var imgPack2 = {
+        checkerImg: 'img/black-checker.png',
+        checkerQueenImg: 'img/black-checker-queen.png',
+        enabledCheckerImg: 'img/black-checker-enabled.png',
+        enabledCheckerQueenImg: 'img/black-checker-queen-enabled.png',
+        selectedCheckerImg: 'img/black-checker-selected.png',
+        selectedCheckerQueenImg: 'img/black-checker-queen-selected.png'
+    };
+
+    this.players.push(new Player(2, 'Черный', this,
+        defaultPlaces2, queenPlaces2, imgPack2));
 
     // Привязка к событию
     this.tableBoard.getStartButton().click(function(){ this.play(); }.bind(this));

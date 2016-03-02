@@ -1,5 +1,6 @@
 // Класс ШАШКА
 var Checker = function(player, id, cell, checkBoard){
+
     // Игрок кому принадлежит шашка
     this.player = player;
 
@@ -8,6 +9,9 @@ var Checker = function(player, id, cell, checkBoard){
 
     // Объект из dom
     this.realObj = null;
+
+    // Доска с шашками
+    this.checkBoard = checkBoard;
 
     // Клетка на которой расположена шашка
     this.cell = cell;
@@ -24,16 +28,10 @@ var Checker = function(player, id, cell, checkBoard){
     // Дамка
     this._isQueen = false;
 
-    // Доска с шашками
-    this.checkBoard = checkBoard;
+    // Текстура для шашки
+    this.realObj = $('<img />', {'src': player.getCheckerImg()});
 
-    if(player === 1){
-        this.realObj = $('<img />',{'src': 'img/white-checker.png'});
-    }
-    else{
-        this.realObj = $('<img />',{'src': 'img/black-checker.png'});
-    }
-
+    // Привязка события нажатия
     $(this.realObj).click(this.clickHandler.bind(this));
 };
 
@@ -42,52 +40,57 @@ Checker.prototype.clickHandler = function(){
     if(this.isEnabled()){
         this.select();
 
-        var enemies = this.getEnemiesNear();
-
-        if(this.isQueen()){
-            enemies = enemies.concat(this.getEnemiesNearForQueen());
-        }
-
-        var freeCells = null;
-        var killerCell = null;
-        var killerCells = null;
-
-        if(enemies.length > 0){
-
-            if(this.isQueen()){
-                for(var i = 0; i < enemies.length; i++){
-                    // нужно получить всю диагональ
-                    killerCells = this.getDiagonalCellByPos(enemies[i].cell, enemies[i].pos);
-                    // И активировать все поля которые без шашек
-                    for(var j = 0; j < killerCells.length; j++){
-                        if(!killerCells[j].hasChecker()){
-                            // Это поле убивает эту шашку
-                            killerCells[j].setKilledChecker(enemies[i].cell.getChecker());
-                            killerCells[j].enable();
-                        }
-                    }
-                }
-            }else{
-                for(var i = 0; i < enemies.length; i++){
-                    killerCell = this.getCellByPos(enemies[i].cell, enemies[i].pos);
-                    // Это поле убивает эту шашку
-                    killerCell.setKilledChecker(enemies[i].cell.getChecker());
-                    killerCell.enable();
-                }
-            }
+        if(this.isEnemiesNear()){
+            this.isQueen() ? this.activateKillCellsForQueen() : this.activateKillCells();
         }else{
+            this.isQueen() ? this.activateFreeCellsForQueen() : this.activateFreeCells();
+        }
+    }
+};
 
-            if(this.isQueen()){
-                freeCells = this.getFreeCellNearForQueen();
-            }else{
-                freeCells = this.getFreeCellNear();
-            }
+// Активировать клетки для обычной шашки с ударом
+Checker.prototype.activateKillCells = function(enemies){
+    var enemies = this.getEnemiesNearForCheckerAndQueen();
+    var killerCell = null;
 
-            for(var i = 0; i < freeCells.length; i++){
-                freeCells[i].cell.enable();
+    for(var i = 0; i < enemies.length; i++){
+        killerCell = this.getCellByPos(enemies[i].cell, enemies[i].pos);
+        // Это поле убивает эту шашку
+        killerCell.setKilledChecker(enemies[i].cell.getChecker());
+        killerCell.enable();
+    }
+};
+
+// Активировать клетки для дамки с ударом
+Checker.prototype.activateKillCellsForQueen = function(){
+    var enemies = this.getEnemiesNearForCheckerAndQueen();
+
+    var killerCells = null;
+
+    for(var i = 0; i < enemies.length; i++){
+
+        // нужно получить всю диагональ
+        killerCells = this.getDiagonalCellByPos(enemies[i].cell, enemies[i].pos);
+
+        // И активировать все поля которые без шашек
+        for(var j = 0; j < killerCells.length; j++){
+            if(!killerCells[j].hasChecker()){
+                // Это поле убивает эту шашку
+                killerCells[j].setKilledChecker(enemies[i].cell.getChecker());
+                killerCells[j].enable();
             }
         }
     }
+};
+
+// Активировать клетки для обычной шашки
+Checker.prototype.activateFreeCells = function(){
+    this.checkBoard.enableCells(this.getFreeCellNear());
+};
+
+// Активировать клетки для дамки
+Checker.prototype.activateFreeCellsForQueen = function(){
+    this.checkBoard.enableCells(this.getFreeCellNearForQueen());
 };
 
 // Получть объект из dom
@@ -247,24 +250,27 @@ Checker.prototype.getEnemiesNearForQueen = function(){
     });
 };
 
+// Получить врагов рядом для обычной и дамки
+Checker.prototype.getEnemiesNearForCheckerAndQueen = function(){
+    // Здесь нужно узнать можно ли еще кого то убить этой шашкой
+    var enemiesNear = this.getEnemiesNear();
+
+    if(this.isQueen()){
+        enemiesNear = enemiesNear.concat(this.getEnemiesNearForQueen());
+    }
+
+    return enemiesNear;
+};
+
 // Сделать шашку доступной для хода
 Checker.prototype.enable = function(){
 
     this._isEnabled = true;
 
-    if(this.player === 1){
-        if(this.isQueen()){
-            this.realObj.attr({'src': 'img/white-checker-queen-enabled.png'});
-        }else{
-            this.realObj.attr({'src': 'img/white-checker-enabled.png'});
-        }
-    }
-    else{
-        if(this.isQueen()){
-            this.realObj.attr({'src': 'img/black-checker-queen-enabled.png'});
-        }else{
-            this.realObj.attr({'src': 'img/black-checker-enabled.png'});
-        }
+    if(this.isQueen()){
+        this.realObj.attr({'src': this.player.getEnabledCheckerQueenImg()});
+    }else{
+        this.realObj.attr({'src': this.player.getEnabledCheckerImg()});
     }
 };
 
@@ -273,19 +279,10 @@ Checker.prototype.disable = function(){
 
     this._isEnabled = false;
 
-    if(this.player === 1){
-        if(this.isQueen()){
-            this.realObj.attr({'src': 'img/white-checker-queen.png'});
-        }else{
-            this.realObj.attr({'src': 'img/white-checker.png'});
-        }
-    }
-    else{
-        if(this.isQueen()){
-            this.realObj.attr({'src': 'img/black-checker-queen.png'});
-        }else{
-            this.realObj.attr({'src': 'img/black-checker.png'});
-        }
+    if(this.isQueen()){
+        this.realObj.attr({'src': this.player.getCheckerQueenImg()});
+    }else{
+        this.realObj.attr({'src': this.player.getCheckerImg()});
     }
 };
 
@@ -299,15 +296,13 @@ Checker.prototype.select = function(){
         this.checkBoard.disableAllCells();
     }
 
-
     this._isSelected = true;
 
-    var fileName =
-        'img/' + ( this.player === 1 ? 'white' : 'black' )
-        + '-checker' + ( this.isQueen() ? '-queen' : '' )
-        + '-selected.png';
-
-    this.realObj.attr({'src': fileName});
+    if(this.isQueen()){
+        this.realObj.attr({'src': this.player.getSelectedCheckerQueenImg()});
+    }else{
+        this.realObj.attr({'src': this.player.getSelectedCheckerImg()});
+    }
 };
 
 // Сделать шашку неактивной
@@ -319,12 +314,19 @@ Checker.prototype.deselect = function(){
 
     this._isSelected = false;
 
-    var fileName =
-        'img/' + ( this.player === 1 ? 'white' : 'black' )
-            + '-checker' + ( this.isQueen() ? '-queen' : '' )
-            + ( this.isEnabled() ? '-enabled' : '' ) + '.png';
-
-    this.realObj.attr({'src': fileName});
+    if(this.isQueen()){
+        if(this.isEnabled()){
+            this.realObj.attr({'src': this.player.getEnabledCheckerQueenImg()});
+        }else{
+            this.realObj.attr({'src': this.player.getCheckerQueenImg()});
+        }
+    }else{
+        if(this.isEnabled()){
+            this.realObj.attr({'src': this.player.getEnabledCheckerImg()});
+        }else{
+            this.realObj.attr({'src': this.player.getCheckerImg()});
+        }
+    }
 };
 
 // Сделать дамкой
@@ -332,12 +334,15 @@ Checker.prototype.makeQueen = function(){
 
     this._isQueen = true;
 
-    if(this.player === 1){
-        this.realObj.attr({'src': 'img/white-checker-queen.png'});
-    }
-    else{
-        this.realObj.attr({'src': 'img/black-checker-queen.png'});
-    }
+    this.realObj.attr({'src': this.player.getCheckerQueenImg()});
+};
+
+// Убить шашку
+Checker.prototype.kill = function(){
+    this._isKilled = true;
+    this.cell._checker = null;
+    this.cell = null;
+    this.realObj.hide();
 };
 
 // Эта шашка не принадлежит текущему игроку
@@ -357,7 +362,7 @@ Checker.prototype.isQueen = function(){
 
 // Эта шашка не принадлежит текущему игроку
 Checker.prototype.isEnemy = function(){
-    return this.player !== this.checkBoard.game.getCurrentPlayer().getId();
+    return this.player.getId() !== this.checkBoard.game.getCurrentPlayer().getId();
 };
 
 // Эта шашка убита
@@ -371,6 +376,15 @@ Checker.prototype.isUnderAttack = function(pos){
     var cell = this.getCellByPos(this.cell, pos);
 
     if(cell && cell.hasChecker() === false) {
+        return true;
+    }
+
+    return false;
+};
+
+// Есть враги рядом
+Checker.prototype.isEnemiesNear = function(){
+    if(this.getEnemiesNearForCheckerAndQueen().length > 0){
         return true;
     }
 
@@ -400,63 +414,41 @@ Checker.prototype.getCellByPos = function(cell, pos){
 
 // Получить диагональ в зависимости от позиции
 Checker.prototype.getDiagonalCellByPos = function(cellStart, pos){
-    var cells = [];
-    var cell = null;
     var cellsIds = [];
 
     switch(pos) {
         case 'TopLeft':
             cellsIds = cellStart.getAllCellIdsByDiagonalTopLeft();
-            for(var i = 0; i < cellsIds.length; i++){
-                cell = this.checkBoard.getCellById(cellsIds[i]);
-                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
-                    break;
-                }
-                cells.push(cell);
-            }
             break;
         case 'TopRight':
             cellsIds = cellStart.getAllCellIdsByDiagonalTopRight();
-            for(var i = 0; i < cellsIds.length; i++){
-                cell = this.checkBoard.getCellById(cellsIds[i]);
-                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
-                    break;
-                }
-                cells.push(cell);
-            }
             break;
         case 'BottomLeft':
             cellsIds = cellStart.getAllCellIdsByDiagonalBottomLeft();
-            for(var i = 0; i < cellsIds.length; i++){
-                cell = this.checkBoard.getCellById(cellsIds[i]);
-                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
-                    break;
-                }
-                cells.push(cell);
-            }
             break;
         case 'BottomRight':
             cellsIds = cellStart.getAllCellIdsByDiagonalBottomRight();
-            for(var i = 0; i < cellsIds.length; i++){
-                cell = this.checkBoard.getCellById(cellsIds[i]);
-                if(cell.hasChecker() && !cell.getChecker().isEnemy()){
-                    break;
-                }
-                cells.push(cell);
-            }
             break;
         default:
             return null;
             break;
     }
 
-    return cells;
+    return this.getFilterDiagonalCells(cellsIds);
 };
 
-// Убить шашку
-Checker.prototype.kill = function(){
-    this._isKilled = true;
-    this.cell._checker = null;
-    this.cell = null;
-    this.realObj.hide();
+// Отфильтровать клетки
+Checker.prototype.getFilterDiagonalCells = function(cellsIds){
+    var cells = [],
+        cell = null;
+
+    for(var i = 0; i < cellsIds.length; i++){
+        cell = this.checkBoard.getCellById(cellsIds[i]);
+        if(cell.hasChecker() && !cell.getChecker().isEnemy()){
+            break;
+        }
+        cells.push(cell);
+    }
+
+    return cells;
 };
